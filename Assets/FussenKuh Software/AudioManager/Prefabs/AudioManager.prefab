@@ -1,0 +1,188 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1841688946769470}
+  m_IsPrefabAsset: 1
+--- !u!1 &1841688946769470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4115844504725326}
+  - component: {fileID: 114422141092979684}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4115844504725326
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1841688946769470}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114422141092979684
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1841688946769470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbb8733a41126f14d8689e4d5748af10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  audioItemPrefab: {fileID: 1275757493741404, guid: 08197d4587e5bef4bac8bfd34b09b21e,
+    type: 2}
+  musicItems:
+  - audioName: DubStep
+    looping: 1
+    volume: 0.5
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: b7b920823e5f40c40b1007cabe90cbb5, type: 3}
+  - audioName: Whistle
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: ec5f4eee76f187f4c88ec9073bdab67e, type: 3}
+  audioItems:
+  - audioName: VirginHit
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 262fd7628b5c1914d86db8948ff36111, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: d8b75e5593447d644bee7a82eaafa651, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: d9f551f48f5b08f4fb711e9ed9f37116, type: 3}
+  - audioName: VirginCollected
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 5e37f5c202d9ff34280d71bfdabd52bb, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 4d500b10321c9884c8decf5c319d90aa, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: ec5581eb5930a0a4bb6c7cbbcaa67ffb, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 6280bf487b38cd746aa0e4053971c319, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: ec5581eb5930a0a4bb6c7cbbcaa67ffb, type: 3}
+  - audioName: VirginFalling
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 5d4bb67aaaa839e4593d8162a059e93e, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: c5aa46cc7ace9f34e931516547acece5, type: 3}
+  - audioName: PlayerStart
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 1dadb10c18596964db75321c5d58d4a8, type: 3}
+  - audioName: SpaceVirgins
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 98610b36b0db48647aff677b53b08836, type: 3}
+  - audioName: Enemy
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 6d0992794d86637409fb2df5bf317061, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: ef10fccd9a6d55a4990e395156eafed5, type: 3}
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: f8b5a4b5315d6114da16241e94b2e3fc, type: 3}
+  - audioName: Typing
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: eecfec89035147b41b9cac69a4afc3e1, type: 3}
+  - audioName: PlayerFalling
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 497e5fb6a7c74624f9be0c94e6284912, type: 3}
+  - audioName: PlayerKilled
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 18b039bd1fbf21f48a250ca1b2445fbe, type: 3}
+  - audioName: GotThemAll
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: e662dcc29fde1794b9ef32dcc85089e0, type: 3}
+  - audioName: NeedMore
+    looping: 0
+    volume: 1
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 1a9fd3eb89188444eb8a72261a4a2792, type: 3}
+  - audioName: Walking
+    looping: 0
+    volume: 0.15
+    clips:
+    - overrideVolume: 0
+      volume: 0
+      clip: {fileID: 8300000, guid: 1019b3d8821539044ab27f85fce061d3, type: 3}
+  musicPoolSize: 10
+  audioPoolSize: 20
+  muteEverything: 0
+  muteAllMusic: 0
+  muteAllAudio: 0

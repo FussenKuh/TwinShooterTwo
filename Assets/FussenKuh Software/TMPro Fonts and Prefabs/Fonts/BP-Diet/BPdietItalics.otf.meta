@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 26286cf2e55777c43b3c672a0ce8cac9
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - BP Diet
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 140b4ad323d894046b874d8e75e4e82e, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
