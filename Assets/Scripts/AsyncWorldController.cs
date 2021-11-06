@@ -30,7 +30,6 @@ public class AsyncWorldController : MonoBehaviour
     {
         if (worldSpawner == null) { return; }
 
-        Debug.Log(settings.ToString());
         worldSpawner.SpawnWorld(settings);
     }
 

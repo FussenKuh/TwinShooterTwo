@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,57 +11,57 @@ public class Enemy : MonoBehaviour
     int MyID { get; }
 
     [SerializeField]
-    bool atGoal = false;
+    BaseEntityMoveToGoal _baseEntityMoveToGoal = null;
 
-    private void Awake()
-    {
-        //Messenger<bool, Player>.AddListener("PlayerAtGoal", OnPlayerAtGoal);
+    [SerializeField]
+    Transform _turret = null;
+    [SerializeField]
+    BaseEntityRotate _turretRotationController = null;
 
-        myID = uniqueID;
-        uniqueID++;
-    }
+    [SerializeField]
+    Transform goal = null;
 
-    private void OnDestroy()
-    {
-        //Messenger<bool, Player>.RemoveListener("PlayerAtGoal", OnPlayerAtGoal);
+    [SerializeField]
+    float detectionDistance = 5f;
 
-    }
+    [SerializeField]
+    List<Player> activePlayers = new List<Player>();
 
-    //void OnPlayerAtGoal(bool goalReached, Player playerID)
-    //{
-    //    if (playerID.MyID == MyID)
-    //    {
-    //        if (goalReached)
-    //        {
-    //            atGoal = true;
-    //            Debug.Log("I'm at the goal! (" + atGoal + ")");
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("I've left the goal :(");
-    //            atGoal = false;
-    //        }
-    //    }
-    //}
 
     // Start is called before the first frame update
     void Start()
     {
-
+        activePlayers = PlayerManager.Instance.Players;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        //if (atGoal & Input.GetKeyDown(KeyCode.G))
-        //{
+        List<Player> nearMe = activePlayers.Where(p => Vector3.Distance(p.transform.position, gameObject.transform.position) <= detectionDistance)
+            .OrderByDescending(p => Vector3.Distance(p.transform.position, gameObject.transform.position)).ToList();
 
-        //    atGoal = false;
+        if (nearMe.Count > 0)
+        {
+            goal = nearMe[nearMe.Count - 1].transform;
+        }
+        else
+        {
+            goal = null;
+        }
 
-        //    GameManager.Instance.LevelCompleted();
-        //    //            Messenger<WorldSpawner.WorldSettings>.Broadcast("SpawnWorld", new WorldSpawner.WorldSettings());
-        //}
-
+        if (goal != null)
+        {
+            _baseEntityMoveToGoal.MoveToGoal(goal.position);
+            _turretRotationController.RotateToGoal(goal.position);
+        }
     }
+
+    private void Awake()
+    {
+        myID = uniqueID;
+        uniqueID++;
+
+        gameObject.name = "Enemy - " + myID.ToString("D3"); 
+    }
+
 }
 

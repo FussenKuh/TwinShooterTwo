@@ -1,8 +1,31 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public static class ExtensionMethods
 {
+
+    #region Random Helpers
+
+    // Example Usage:
+    // List<int> nums = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    // int[] array = new int[] { 1, 2, 3, 4 };
+    // var rng = new System.Random();
+    // rng.Shuffle(nums);  // List 'nums' will now be shuffled
+    // rng.Shuffle(array); // Array 'array' will now be shuffled
+
+    public static void Shuffle<T>(this System.Random rng, IList<T> array)
+    {
+        int n = array.Count;
+        while (n > 1)
+        {
+            int k = rng.Next(n--);
+            T temp = array[n];
+            array[n] = array[k];
+            array[k] = temp;
+        }
+    }
+    #endregion
 
     #region Number Helpers
     /// <summary>

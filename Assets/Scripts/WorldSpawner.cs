@@ -529,22 +529,22 @@ public class WorldSpawner : MonoBehaviour
 
 
         // Spew some ascii art of the level layout to the debug console
-        string resultsString = "";
-        for (int h = grid.GetHeight() - 1; h >= 0; h--)
-        {
-            for (int w = 0; w < grid.GetWidth(); w++)
-            {
-                if (grid.GetGridObject(w, h))
-                {
-                    resultsString += "_";
-                }
-                else
-                {
-                    resultsString += "X";
-                }
-            }
-            resultsString += "\n";
-        }
+        string resultsString = "Width: " + worldWidth + " Height: " + worldHeight + "\n";
+        //for (int h = grid.GetHeight() - 1; h >= 0; h--)
+        //{
+        //    for (int w = 0; w < grid.GetWidth(); w++)
+        //    {
+        //        if (grid.GetGridObject(w, h))
+        //        {
+        //            resultsString += "_";
+        //        }
+        //        else
+        //        {
+        //            resultsString += "X";
+        //        }
+        //    }
+        //    resultsString += "\n";
+        //}
 
         Debug.Log(resultsString);
 

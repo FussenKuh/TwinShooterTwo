@@ -40,13 +40,13 @@ public class MiniMap : MonoBehaviour
             transform.position = mainCamera.transform.position;
         }
 
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            if (miniMapCanvas != null)
-            {
-                miniMapCanvas.SetActive(!miniMapCanvas.activeSelf);
-            }
-        }
+        //if (Input.GetKeyDown(KeyCode.M))
+        //{
+        //    if (miniMapCanvas != null)
+        //    {
+        //        miniMapCanvas.SetActive(!miniMapCanvas.activeSelf);
+        //    }
+        //}
 
     }
 }

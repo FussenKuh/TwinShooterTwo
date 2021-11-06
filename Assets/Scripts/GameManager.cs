@@ -46,16 +46,20 @@ public class GameManager : Singleton<GameManager>
         CurrentLevel = level;
 
         PlayerManager.Instance.RelocatePlayers(CurrentLevel.StartPoint.transform);
-        PlayerManager.Instance.SetPlayersActive(true);
+        
+        //PlayerManager.Instance.SetPlayersActive(true);
 
     }
 
     public void LoadLevel()
     {
-        LevelSettings.worldWidth = Random.Range(50, 75);
-        LevelSettings.worldHeight = Random.Range(25, 50);
-//        cameraSystem.CameraBounds = new Vector3(levelSettings.worldWidth + levelSettings.borderWallThickness, levelSettings.worldHeight + levelSettings.borderWallThickness, 1);
-        PlayerManager.Instance.SetPlayersActive(false);
+        //LevelSettings.worldWidth = Random.Range(50, 75);
+        //LevelSettings.worldHeight = Random.Range(25, 50);
+        LevelSettings.worldWidth = Random.Range(300, 400);
+        LevelSettings.worldHeight = Random.Range(300, 400);
+        //        cameraSystem.CameraBounds = new Vector3(levelSettings.worldWidth + levelSettings.borderWallThickness, levelSettings.worldHeight + levelSettings.borderWallThickness, 1);
+
+        //PlayerManager.Instance.SetPlayersActive(false);
 
         FKS.SceneUtils.LoadScene("Level Scene");
     }
