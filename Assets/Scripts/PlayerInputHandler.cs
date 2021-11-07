@@ -149,10 +149,10 @@ public class PlayerInputHandler : MonoBehaviour
                     tmpShell.transform.parent = _shellParent.transform;
                 }
 
-                if (tmpBullet != null)
-                {
-                    Destroy(tmpBullet, 2f);
-                }
+                //if (tmpBullet != null)
+                //{
+                //    Destroy(tmpBullet, 2f);
+                //}
 
             }
         }

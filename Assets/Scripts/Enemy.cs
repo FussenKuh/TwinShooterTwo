@@ -63,5 +63,15 @@ public class Enemy : MonoBehaviour
         gameObject.name = "Enemy - " + myID.ToString("D3"); 
     }
 
+    public void Hit(GameObject objectHit)
+    {
+        EnemyManager.Instance.Kill(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log(name + " has been killed");
+    }
+
 }
 

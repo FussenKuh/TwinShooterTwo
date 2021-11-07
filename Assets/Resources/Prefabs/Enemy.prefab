@@ -284,7 +284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidBody: {fileID: 8166225218686713155}
   _movementAcceleration: 10
-  _maxMovementSpeed: 4
+  _maxMovementSpeed: 2
   _moving: 0
   _drawDebugGizmo: 0
   currentSpeed: 0
@@ -304,7 +304,7 @@ MonoBehaviour:
   _turret: {fileID: 3979005597004014610}
   _turretRotationController: {fileID: 1915408545593866209}
   goal: {fileID: 0}
-  detectionDistance: 10
+  detectionDistance: 15
   activePlayers: []
 --- !u!114 &923271415803879068
 MonoBehaviour:
@@ -320,7 +320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 8166225218686713155}
   movementAcceleration: 10
-  maxMovementSpeed: 4
+  maxMovementSpeed: 2
   goal: {x: 0, y: 0, z: 0}
   goalDistanceThreshold: 1
   drawDebugGizmo: 0

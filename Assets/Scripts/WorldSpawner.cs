@@ -96,7 +96,8 @@ public class WorldSpawner : MonoBehaviour
     public Transform worldHolder;
 
 
-    public Grid<bool> grid;
+    //public Grid<bool> walkableGrid;
+    public Grid<GridObject> grid;
 
     public event System.EventHandler<LevelReadyArgs> OnLevelReadyEvent;
 
@@ -505,24 +506,26 @@ public class WorldSpawner : MonoBehaviour
 
     void ConfigureGrid()
     {
-        grid = new Grid<bool>(worldWidth, worldHeight, 1f, transform.position - new Vector3(worldWidth/2f, worldHeight/2f, 0)/*new Vector3(-(worldWidth / 2), -(worldHeight / 2), 0)*/, (Grid<bool> g, int x, int y) => true);
 
-        for (int h = grid.GetHeight()-1; h >= 0; h--)
+        grid = new Grid<GridObject>(worldWidth, worldHeight, 1f, transform.position - new Vector3(worldWidth / 2f, worldHeight / 2f, 0), (Grid<GridObject> g, int x, int y) => new GridObject(g,x,y));
+        for (int h = grid.GetHeight() - 1; h >= 0; h--)
         {
-            for (int w = 0; w < grid.GetWidth(); w++) 
+            for (int w = 0; w < grid.GetWidth(); w++)
             {
 
                 if (Physics2D.OverlapBox(grid.GetWorldCenterPosition(w, h), new Vector2(0.4f, 0.4f), 0, LayerMask.GetMask("Default")) == null)
                 {
                     //Debug.Log(grid.GetWorldCenterPosition(w, h) + " -- Nothing Hit");
                     // No Object at this position. Mark the grid as 'true' for passible 
-                    grid.SetGridObject(w, h, true);
+                    GridObject go = grid.GetGridObject(w, h);
+                    go.Walkable = true;
                 }
                 else
                 {
                     //Debug.Log(grid.GetWorldCenterPosition(w, h) + " -- Hit");
                     // We hit an object at this position. Mark the grid as 'false' for not passible
-                    grid.SetGridObject(w, h, false);
+                    GridObject go = grid.GetGridObject(w, h);
+                    go.Walkable = false;
                 }
             }
         }
@@ -530,23 +533,61 @@ public class WorldSpawner : MonoBehaviour
 
         // Spew some ascii art of the level layout to the debug console
         string resultsString = "Width: " + worldWidth + " Height: " + worldHeight + "\n";
-        //for (int h = grid.GetHeight() - 1; h >= 0; h--)
+        for (int h = grid.GetHeight() - 1; h >= 0; h--)
+        {
+            for (int w = 0; w < grid.GetWidth(); w++)
+            {
+                resultsString += grid.GetGridObject(w, h).AsciiMapCharacter;
+            }
+            resultsString += "\n";
+        }
+
+        Debug.Log(resultsString);
+
+
+
+        //walkableGrid = new Grid<bool>(worldWidth, worldHeight, 1f, transform.position - new Vector3(worldWidth/2f, worldHeight/2f, 0)/*new Vector3(-(worldWidth / 2), -(worldHeight / 2), 0)*/, (Grid<bool> g, int x, int y) => true);
+
+        //for (int h = walkableGrid.GetHeight()-1; h >= 0; h--)
         //{
-        //    for (int w = 0; w < grid.GetWidth(); w++)
+        //    for (int w = 0; w < walkableGrid.GetWidth(); w++) 
         //    {
-        //        if (grid.GetGridObject(w, h))
+
+        //        if (Physics2D.OverlapBox(walkableGrid.GetWorldCenterPosition(w, h), new Vector2(0.4f, 0.4f), 0, LayerMask.GetMask("Default")) == null)
         //        {
-        //            resultsString += "_";
+        //            //Debug.Log(grid.GetWorldCenterPosition(w, h) + " -- Nothing Hit");
+        //            // No Object at this position. Mark the grid as 'true' for passible 
+        //            walkableGrid.SetGridObject(w, h, true);
         //        }
         //        else
         //        {
-        //            resultsString += "X";
+        //            //Debug.Log(grid.GetWorldCenterPosition(w, h) + " -- Hit");
+        //            // We hit an object at this position. Mark the grid as 'false' for not passible
+        //            walkableGrid.SetGridObject(w, h, false);
         //        }
         //    }
-        //    resultsString += "\n";
         //}
 
-        Debug.Log(resultsString);
+
+        //// Spew some ascii art of the level layout to the debug console
+        //string walkingResultsString = "Width: " + worldWidth + " Height: " + worldHeight + "\n";
+        ////for (int h = grid.GetHeight() - 1; h >= 0; h--)
+        ////{
+        ////    for (int w = 0; w < grid.GetWidth(); w++)
+        ////    {
+        ////        if (grid.GetGridObject(w, h))
+        ////        {
+        ////            resultsString += "_";
+        ////        }
+        ////        else
+        ////        {
+        ////            resultsString += "X";
+        ////        }
+        ////    }
+        ////    resultsString += "\n";
+        ////}
+
+        //Debug.Log(walkingResultsString);
 
     }
 
@@ -652,6 +693,7 @@ public class WorldSpawner : MonoBehaviour
 
         if (drawDebugGrid)
         {
+            //            walkableGrid.DrawDebug(1);
             grid.DrawDebug(1);
         }
 

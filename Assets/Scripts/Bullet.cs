@@ -7,7 +7,12 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Destroy(gameObject, 0.1f);
+        if (collision.gameObject.GetComponent<Enemy>() != null)
+        {
+            collision.gameObject.GetComponent<Enemy>().Hit(gameObject);
+        }
+
+        Destroy(gameObject, 0.1f);
     }
 
     // Start is called before the first frame update

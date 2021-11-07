@@ -69,7 +69,14 @@ public class Grid<TGridObject> {
 
     public Vector3 GetWorldCenterPosition(int x, int y)
     {
-        return (new Vector3(x, y) * cellSize) + originPosition + new Vector3(cellSize/2, cellSize/2, 0);
+        return GetWorldPosition(x, y) + new Vector3(cellSize / 2, cellSize / 2, 0);
+    }
+
+    public Vector3 GetWorldCenterPosition(Vector3 pos)
+    {
+        int x, y;
+        GetXY(pos, out x, out y);
+        return GetWorldCenterPosition(x, y);
     }
 
     private void GetXY(Vector3 worldPosition, out int x, out int y) {

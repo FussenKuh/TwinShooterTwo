@@ -57,37 +57,105 @@ public class EnemyManager : Singleton<EnemyManager>
     void OnWorldSpawned(WorldSpawner w)
     {
         level = w;
+        CurrentSpawner = RandomSpawn;
         StartCoroutine(ManageEnemies());
     }
 
 
+    Vector3 RandomPointOnXYCircle(Vector3 center, float radius)
+    {
+        float angle = Random.Range(0, 2f * Mathf.PI);
+        return center + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * radius;
+    }
+
+    float OriginalRandomSpawn()
+    {
+        if (enemies.Count < maxNumberOfEnemies && cameraSystem != null)
+        {
+            Bounds cameraBounds = cameraSystem.CalculatedBounds;
+
+            Vector3 desiredPos = new Vector3(Random.Range(-cameraBounds.extents.x, cameraBounds.extents.x), Random.Range(-cameraBounds.extents.y, cameraBounds.extents.y), 0);
+            desiredPos += cameraBounds.center;
+            desiredPos.z = 0;
+
+            desiredPos.x = (int)desiredPos.x + 0.5f;
+            desiredPos.y = (int)desiredPos.y + 0.5f;
+
+            GridObject go = level.grid.GetGridObject(desiredPos);
+
+            if (go != null)
+            {
+                if (level.grid.GetGridObject(desiredPos).Walkable)
+                {
+                    AddEnemy(desiredPos);
+                }
+            }
+            else
+            {
+                // We've randomly chosen a place outside of the level boundary. Don't do anything
+                //Debug.LogError("No grid object defined at " + desiredPos);
+            }
+        }
+
+        float retVal = 0.1f;
+        return retVal;
+    }
+
+    float NoSpawn()
+    {
+        float retVal = 0.1f;
+
+        return retVal;
+    }
+
+    [SerializeField]
+    float spawnDist = 10;
+
+    float RandomSpawn()
+    {
+        if (enemies.Count < maxNumberOfEnemies)
+        {
+            Vector3 desiredPos = RandomPointOnXYCircle(PlayerManager.Instance.AveragePlayersLocation, spawnDist);
+            GridObject go = level.grid.GetGridObject(desiredPos);
+
+            int tries = 0;
+            while (go == null && tries < 1000)
+            {
+                tries++;
+                desiredPos = RandomPointOnXYCircle(PlayerManager.Instance.AveragePlayersLocation, spawnDist);
+                go = level.grid.GetGridObject(desiredPos);
+            }
+
+            
+
+            if (go != null)
+            {
+                desiredPos = level.grid.GetWorldCenterPosition(desiredPos);
+                if (level.grid.GetGridObject(desiredPos).Walkable)
+                {
+                    AddEnemy(desiredPos);
+                }
+            }
+            else
+            {
+                // We've randomly chosen a place outside of the level boundary. Don't do anything
+                //Debug.LogError("No grid object defined at " + desiredPos);
+            }
+        }
+
+        float retVal = 0.5f;
+        return retVal;
+    }
+
+    delegate float SpawnerType();
+    SpawnerType CurrentSpawner;
+
     IEnumerator ManageEnemies()
     {
-        Bounds cameraBounds;
-
         Debug.Log("Starting to manage the enemies");
         while (true)
         {
-            if (enemies.Count < maxNumberOfEnemies && cameraSystem != null)
-            {
-                cameraBounds = cameraSystem.CalculatedBounds;
-
-                Vector3 desiredPos = new Vector3(Random.Range(-cameraBounds.extents.x, cameraBounds.extents.x), Random.Range(-cameraBounds.extents.y, cameraBounds.extents.y), 0);
-                desiredPos += cameraBounds.center;
-                desiredPos.z = 0;
-
-                desiredPos.x = (int)desiredPos.x + 0.5f;
-                desiredPos.y = (int)desiredPos.y + 0.5f;
-
-                if (level.grid.GetGridObject(desiredPos))
-                {
-
-                    AddEnemy(desiredPos);
-
-                }
-            }
-
-            yield return new WaitForSeconds(spawnDelay);
+            yield return new WaitForSeconds(CurrentSpawner());
         }
     }
 
@@ -103,36 +171,29 @@ public class EnemyManager : Singleton<EnemyManager>
         enemies.Add(GameObject.Instantiate(enemyPrefab.gameObject, desiredPos, enemyPrefab.gameObject.transform.rotation).GetComponent<Enemy>());
         enemies[enemies.Count - 1].transform.parent = transform;
 
-        level.grid.SetGridObject(desiredPos, false);
+        //GridObject go = level.grid.GetGridObject(desiredPos);
+        //go.Occupied = true;
 
     }
 
-    public void RelocateEnemies(Vector3 location)
+    public void Kill(GameObject objectToKill)
     {
-        //foreach (Player p in players)
-        //{
-        //    p.transform.position = location;
-        //}
-    }
+        if (enemies.Count == 0) { return; }
 
-    public void RelocateEnemies(Transform trans)
-    {
-        //foreach (Player p in players)
-        //{
-        //    Vector3 pos = new Vector3(
-        //        Random.Range(-trans.localScale.x * 0.30f, trans.localScale.x * 0.30f), Random.Range(-trans.localScale.y * 0.30f, trans.localScale.y * 0.30f), 0) + trans.position;
-        //    p.transform.position = pos;
-        //}
-    }
-
-    public void SetEnemiesActive(bool status)
-    {
-        foreach (Enemy e in enemies)
+        int count = 0;
+        while (count < enemies.Count && enemies[count].gameObject != objectToKill)
         {
-            e.gameObject.SetActive(status);
+            count++;
+        }
+
+        if (count < enemies.Count)
+        {
+            Destroy(enemies[count].gameObject);
+            enemies.RemoveAt(count);
+            
+            
         }
     }
-
 
     // Update is called once per frame
     void Update()

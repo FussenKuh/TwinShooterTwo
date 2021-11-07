@@ -24,6 +24,31 @@ public class PlayerManager : Singleton<PlayerManager>
     [SerializeField]
     int maxPlayers = 1;
 
+    /// <summary>
+    /// The average location of all players. i.e. Add all player position vectors and divide by number of players
+    /// </summary>
+    public Vector3 AveragePlayersLocation
+    {
+        get 
+        {
+            if (players.Count == 0)
+            {
+                Debug.LogWarning("PlayerManager - Calling AveragePlayerLocation with no players. Returning Vector.zero");
+                return Vector3.zero;
+            }
+
+            Vector3 retVal = Vector3.zero;
+            foreach (Player p in players)
+            {
+                retVal += p.transform.position;
+            }
+
+            retVal /= players.Count;
+            return retVal; 
+        }
+    }
+
+
     void OnPlayerJoined(PlayerInput playerInput)
     {
 
