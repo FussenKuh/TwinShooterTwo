@@ -358,6 +358,7 @@ public class WorldSpawner : MonoBehaviour
         {
             GameObject tmp;
             SpriteRenderer sr;
+            BoxCollider2D bc;
             ContactFilter2D filter = new ContactFilter2D();
             filter.NoFilter();
 
@@ -365,12 +366,18 @@ public class WorldSpawner : MonoBehaviour
 
             // Generate a *potential* object
             tmp = GameObject.Instantiate(objPrefab);
-            tmp.transform.localScale = new Vector2(Random.Range(minObjectSize, maxObjectSize), Random.Range(minObjectSize, maxObjectSize));
+            //tmp.transform.localScale = new Vector2(Random.Range(minObjectSize, maxObjectSize), Random.Range(minObjectSize, maxObjectSize));
+
+            sr = tmp.GetComponent<SpriteRenderer>();
+            sr.size = new Vector2(Random.Range(minObjectSize, maxObjectSize), Random.Range(minObjectSize, maxObjectSize));
+
+            bc = tmp.GetComponent<BoxCollider2D>();
+            bc.size = sr.size;
 
             Vector3 pos = new Vector3((int)Random.Range(-worldDims.width / 2, worldDims.width / 2), (int)Random.Range(-worldDims.height / 2, worldDims.height / 2), 0);
-            if ((tmp.transform.localScale.x % 2 == 0 && worldDims.width % 2 != 0) || (tmp.transform.localScale.x % 2 != 0 && worldDims.width % 2 == 0))
+            if ((/*tmp.transform.localScale.x*/ sr.size.x % 2 == 0 && worldDims.width % 2 != 0) || (/*tmp.transform.localScale.x*/ sr.size.x % 2 != 0 && worldDims.width % 2 == 0))
             {
-                if (pos.x + 0.5f + (tmp.transform.localScale.x / 2) <= origin.x + (worldDims.x / 2))
+                if (pos.x + 0.5f + (/*tmp.transform.localScale.x*/ sr.size.x / 2) <= origin.x + (worldDims.x / 2))
                 {
                     pos.x += 0.5f;
                 }
@@ -379,9 +386,9 @@ public class WorldSpawner : MonoBehaviour
                     pos.x -= 0.5f;
                 }
             }
-            if ((tmp.transform.localScale.y % 2 == 0 && worldDims.height % 2 != 0) || (tmp.transform.localScale.y % 2 != 0 && worldDims.height % 2 == 0))
+            if ((/*tmp.transform.localScale.y*/ sr.size.y % 2 == 0 && worldDims.height % 2 != 0) || (/*tmp.transform.localScale.y*/ sr.size.y % 2 != 0 && worldDims.height % 2 == 0))
             {
-                if (pos.y + 0.5f + (tmp.transform.localScale.y / 2) <= origin.y + (worldDims.y / 2))
+                if (pos.y + 0.5f + (/*tmp.transform.localScale.y*/ sr.size.y / 2) <= origin.y + (worldDims.y / 2))
                 {
                     pos.y += 0.5f;
                 }
@@ -412,11 +419,12 @@ public class WorldSpawner : MonoBehaviour
             }
             else
             {
+                Debug.Log("Object Size: " + sr.size);
                 // The object has found a proper spot in the world! Finalize the object
                 nameIndex++;
                 tmp.transform.parent = worldContainer;
                 tmp.name = "Object " + nameIndex.ToString("D3");
-                sr = tmp.GetComponent<SpriteRenderer>();
+                //sr = tmp.GetComponent<SpriteRenderer>();
 
                 if (randomObjectColors)
                 {
@@ -424,10 +432,13 @@ public class WorldSpawner : MonoBehaviour
                 }
                 else
                 {
-                    sr.color = objectColors[Random.Range(0, objectColors.Count)];
+                    int index = Random.Range(0, objectColors.Count);
+                    Debug.Log("ObjectColors Count: " + objectColors.Count);
+                    Debug.Log("Index: " + index);
+                    sr.color = objectColors[index];
                 }
 
-                objectArea += (tmp.transform.localScale.x * tmp.transform.localScale.y);
+                objectArea += sr.size.x * sr.size.y; /*(tmp.transform.localScale.x * tmp.transform.localScale.y);*/
                 objectPercentActual = objectArea / worldArea;
             }
             yield return new WaitForFixedUpdate();

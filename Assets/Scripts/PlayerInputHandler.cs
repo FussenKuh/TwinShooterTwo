@@ -75,6 +75,8 @@ public class PlayerInputHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        impulseSource = GetComponent<Cinemachine.CinemachineImpulseSource>();
+
         this.MoveEvent += OnMoveEvent;
         this.LookEvent += OnLookEvent;
 
@@ -121,11 +123,14 @@ public class PlayerInputHandler : MonoBehaviour
 
         if (firing)
         {
+            triggerDown += Time.deltaTime;
+            triggerDown = Mathf.Min(5, triggerDown);
+
             if (_elapsedTime > _fireRate)
             {
                 _elapsedTime = 0f;
                 GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_bulletPrefab, _bulletSpawnLocation.position, _turret.right, _speed, _angleVariation, 0);
-
+                tmpBullet.GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
                 try
                 {
                     tmpBullet.transform.parent = _bulletParent.transform;
@@ -149,14 +154,24 @@ public class PlayerInputHandler : MonoBehaviour
                     tmpShell.transform.parent = _shellParent.transform;
                 }
 
-                //if (tmpBullet != null)
-                //{
-                //    Destroy(tmpBullet, 2f);
-                //}
+                impulseMult = triggerDown.Remap(0f, 5f, 0.1f, 0.5f);
+
+                impulseSource.GenerateImpulse(_turret.right * impulseMult);
 
             }
+        } 
+        else
+        {
+            triggerDown -= (Time.deltaTime * 2f);
+            triggerDown = Mathf.Max(0, triggerDown);
         }
     }
+
+    Cinemachine.CinemachineImpulseSource impulseSource;
+
+    public float impulseMult = 1.0f;
+
+    public float triggerDown = 0f;
 
 
     void OnMoveEvent(object sender, OnDirectionArgs args)

@@ -20,6 +20,13 @@ namespace FKS
             }
             #endregion
 
+
+            public static Vector3 RandomPointOnXYCircle(Vector3 center, float radius)
+            {
+                float angle = UnityEngine.Random.Range(0, 2f * Mathf.PI);
+                return center + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * radius;
+            }
+
             /// <summary>
             /// Sets the random number generator's seed
             /// </summary>

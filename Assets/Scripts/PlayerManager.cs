@@ -22,7 +22,7 @@ public class PlayerManager : Singleton<PlayerManager>
     PlayerInputManager pim;
 
     [SerializeField]
-    int maxPlayers = 1;
+    int maxPlayers = 2;
 
     /// <summary>
     /// The average location of all players. i.e. Add all player position vectors and divide by number of players
@@ -52,7 +52,7 @@ public class PlayerManager : Singleton<PlayerManager>
     void OnPlayerJoined(PlayerInput playerInput)
     {
 
-        pim.DisableJoining();
+        //pim.DisableJoining();
 
         Debug.Log("Player " + playerInput.playerIndex + " Joined.");
 
@@ -63,6 +63,11 @@ public class PlayerManager : Singleton<PlayerManager>
         players.Add(playerInput.gameObject.GetComponent<Player>());
         players[players.Count - 1].MyID = playerInput.playerIndex;
         cameraSystem.AddFollowTarget(players[players.Count - 1].transform);
+
+        if (players.Count >= maxPlayers)
+        {
+            pim.DisableJoining();
+        }
     }
 
     void OnPlayerLeft(PlayerInput playerInput)

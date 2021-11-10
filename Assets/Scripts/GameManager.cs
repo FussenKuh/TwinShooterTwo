@@ -55,9 +55,15 @@ public class GameManager : Singleton<GameManager>
     {
         LevelSettings.worldWidth = Random.Range(50, 75);
         LevelSettings.worldHeight = Random.Range(25, 50);
+        LevelSettings.objectColors.Clear();
+        LevelSettings.objectColors.Add(new Color(1, 1, 1));
+        LevelSettings.objectColors.Add(new Color(.8f, .8f, .8f));
+        LevelSettings.objectColors.Add(new Color(.6f, .6f, .6f));
+        LevelSettings.objectColors.Add(new Color(.4f, .4f, .4f));
+        LevelSettings.objectColors.Add(new Color(.2f, .2f, .2f));
+
         //LevelSettings.worldWidth = Random.Range(300, 400);
         //LevelSettings.worldHeight = Random.Range(300, 400);
-        //        cameraSystem.CameraBounds = new Vector3(levelSettings.worldWidth + levelSettings.borderWallThickness, levelSettings.worldHeight + levelSettings.borderWallThickness, 1);
 
         //PlayerManager.Instance.SetPlayersActive(false);
 

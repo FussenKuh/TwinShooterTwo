@@ -135,6 +135,10 @@ PrefabInstance:
       value: Mini Map (1)
       objectReference: {fileID: 0}
     - target: {fileID: 8553410628508450399, guid: 02f143fa4a0c97a4691aebab4a986ab7, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8553410628508450399, guid: 02f143fa4a0c97a4691aebab4a986ab7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -147,6 +151,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8553410628508450399, guid: 02f143fa4a0c97a4691aebab4a986ab7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8553410628508450399, guid: 02f143fa4a0c97a4691aebab4a986ab7, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -156,14 +164,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8553410628508450399, guid: 02f143fa4a0c97a4691aebab4a986ab7, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8553410628508450399, guid: 02f143fa4a0c97a4691aebab4a986ab7, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8553410628508450399, guid: 02f143fa4a0c97a4691aebab4a986ab7, type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8553410628508450399, guid: 02f143fa4a0c97a4691aebab4a986ab7, type: 3}
@@ -230,9 +230,13 @@ MonoBehaviour:
   startPrefab: {fileID: 7076548793987406323, guid: 70c7e9633ad7cbe44a15fb95b5129b6e, type: 3}
   goalPrefab: {fileID: 7076548793987406323, guid: 5ec657fb75573a145968b1aacc638639, type: 3}
   allowObjectRotation: 0
-  randomObjectColors: 0
+  randomObjectColors: 1
   objectColors:
   - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.8, g: 0.8, b: 0.8, a: 1}
+  - {r: 0.6, g: 0.6, b: 0.6, a: 1}
+  - {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  - {r: 0.2, g: 0.2, b: 0.2, a: 1}
   worldBorderColor: {r: 0, g: 0, b: 0, a: 1}
   borderWallThickness: 5
   distancePercent: 0.6
@@ -253,6 +257,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -300,7 +305,10 @@ MonoBehaviour:
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
+    ModeOverride: 0
     LensShift: {x: 0, y: 0}
+    GateFit: 2
+    m_SensorSize: {x: 1, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -319,6 +327,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1721520250}
   m_Father: {fileID: 0}
@@ -359,6 +368,7 @@ MonoBehaviour:
   spawnDelay: 0.1
   cameraSystem: {fileID: 0}
   maxNumberOfEnemies: 50
+  spawnDist: 10
 --- !u!4 &494470483
 Transform:
   m_ObjectHideFlags: 0
@@ -369,6 +379,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -487,6 +498,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -519,6 +531,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 11.367197, y: 8.913432, z: 219.27873}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 255907856}
   m_RootOrder: 0
@@ -605,6 +618,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 102.06494, y: 92.67418, z: -424.2017}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4

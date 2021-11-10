@@ -133,7 +133,12 @@ public class EnemyManager : Singleton<EnemyManager>
                 desiredPos = level.grid.GetWorldCenterPosition(desiredPos);
                 if (level.grid.GetGridObject(desiredPos).Walkable)
                 {
-                    AddEnemy(desiredPos);
+                    int max = Random.Range(4, 10);
+                    for (int i = 0; i < max; i++)
+                    {
+                        Vector3 offset = Random.insideUnitCircle;
+                        AddEnemy(desiredPos + offset);
+                    }
                 }
             }
             else
@@ -143,7 +148,7 @@ public class EnemyManager : Singleton<EnemyManager>
             }
         }
 
-        float retVal = 0.5f;
+        float retVal = 0.75f;
         return retVal;
     }
 

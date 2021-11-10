@@ -27,6 +27,10 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     List<Player> activePlayers = new List<Player>();
 
+    [SerializeField]
+    int maxHealth = 3;
+    [SerializeField]
+    int currentHealth = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -34,8 +38,34 @@ public class Enemy : MonoBehaviour
         activePlayers = PlayerManager.Instance.Players;
     }
 
+    Vector3 searchGoal = Vector3.zero;
+
+
+    bool TooFarAway()
+    {
+        bool retVal = false;
+
+        List<Player> nearMe = activePlayers.Where(p => Vector3.Distance(p.transform.position, gameObject.transform.position) <= (detectionDistance * 2))
+            .OrderByDescending(p => Vector3.Distance(p.transform.position, gameObject.transform.position)).ToList();
+
+        if (nearMe.Count == 0)
+        {
+            retVal = true;
+        }
+
+        return retVal;
+    }
+
     private void FixedUpdate()
     {
+
+        if (TooFarAway())
+        {
+            Debug.Log(name + " is too far away. Killing it off...");
+            EnemyManager.Instance.Kill(gameObject);
+            return;
+        }
+
         List<Player> nearMe = activePlayers.Where(p => Vector3.Distance(p.transform.position, gameObject.transform.position) <= detectionDistance)
             .OrderByDescending(p => Vector3.Distance(p.transform.position, gameObject.transform.position)).ToList();
 
@@ -46,6 +76,12 @@ public class Enemy : MonoBehaviour
         else
         {
             goal = null;
+            //if (Vector3.Distance(searchGoal, transform.position) > 10 || Vector3.Distance(searchGoal, transform.position) <= 1)
+            //{
+            //    searchGoal = FKS.Utils.Rand.RandomPointOnXYCircle(transform.position, 2);
+            //}
+            //_baseEntityMoveToGoal.MoveToGoal(searchGoal);
+            //_turretRotationController.RotateToGoal(searchGoal);
         }
 
         if (goal != null)
@@ -60,17 +96,40 @@ public class Enemy : MonoBehaviour
         myID = uniqueID;
         uniqueID++;
 
-        gameObject.name = "Enemy - " + myID.ToString("D3"); 
+        gameObject.name = "Enemy - " + myID.ToString("D3");
+
+        currentHealth = maxHealth;
+    }
+
+    Color UpdateColor(Color tint)
+    {
+        Color retValue = tint;
+
+        if (currentHealth > 0)
+        {
+            retValue = new Color((tint.r * (1f / currentHealth)), (tint.g * (1f / currentHealth)), (tint.b * (1f / currentHealth)));
+        }
+        return retValue;
     }
 
     public void Hit(GameObject objectHit)
     {
-        EnemyManager.Instance.Kill(gameObject);
+        currentHealth--;
+
+        SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
+
+        sr.color = UpdateColor(objectHit.GetComponent<SpriteRenderer>().color);
+        
+
+        if (currentHealth <= 0)
+        {
+            EnemyManager.Instance.Kill(gameObject);
+        }
     }
 
     private void OnDestroy()
     {
-        Debug.Log(name + " has been killed");
+        //Debug.Log(name + " has been killed");
     }
 
 }
