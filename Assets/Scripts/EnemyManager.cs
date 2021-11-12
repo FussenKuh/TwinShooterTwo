@@ -47,17 +47,24 @@ public class EnemyManager : Singleton<EnemyManager>
     private void Awake()
     {
         Messenger<WorldSpawner>.AddListener("WorldSpawned", OnWorldSpawned);
+        Messenger<Player>.AddListener("ExitedStartZone", OnExitedStartZone);
     }
 
     private void OnDestroy()
     {
         Messenger<WorldSpawner>.RemoveListener("WorldSpawned", OnWorldSpawned);
+        Messenger<Player>.RemoveListener("ExitedStartZone", OnExitedStartZone);
+    }
+
+    void OnExitedStartZone(Player player)
+    {
+        CurrentSpawner = RandomSpawn;
     }
 
     void OnWorldSpawned(WorldSpawner w)
     {
         level = w;
-        CurrentSpawner = RandomSpawn;
+        CurrentSpawner = NoSpawn;
         StartCoroutine(ManageEnemies());
     }
 
@@ -68,38 +75,7 @@ public class EnemyManager : Singleton<EnemyManager>
         return center + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * radius;
     }
 
-    float OriginalRandomSpawn()
-    {
-        if (enemies.Count < maxNumberOfEnemies && cameraSystem != null)
-        {
-            Bounds cameraBounds = cameraSystem.CalculatedBounds;
-
-            Vector3 desiredPos = new Vector3(Random.Range(-cameraBounds.extents.x, cameraBounds.extents.x), Random.Range(-cameraBounds.extents.y, cameraBounds.extents.y), 0);
-            desiredPos += cameraBounds.center;
-            desiredPos.z = 0;
-
-            desiredPos.x = (int)desiredPos.x + 0.5f;
-            desiredPos.y = (int)desiredPos.y + 0.5f;
-
-            GridObject go = level.grid.GetGridObject(desiredPos);
-
-            if (go != null)
-            {
-                if (level.grid.GetGridObject(desiredPos).Walkable)
-                {
-                    AddEnemy(desiredPos);
-                }
-            }
-            else
-            {
-                // We've randomly chosen a place outside of the level boundary. Don't do anything
-                //Debug.LogError("No grid object defined at " + desiredPos);
-            }
-        }
-
-        float retVal = 0.1f;
-        return retVal;
-    }
+    
 
     float NoSpawn()
     {

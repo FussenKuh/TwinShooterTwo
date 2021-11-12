@@ -7,10 +7,13 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        EffectsManager.Instance.BulletHit(collision);
         if (collision.gameObject.GetComponent<Enemy>() != null)
         {
-            collision.gameObject.GetComponent<Enemy>().Hit(gameObject);
+            collision.gameObject.GetComponent<Enemy>().Hit(collision, gameObject);
         }
+
+
 
         Destroy(gameObject, 0.1f);
     }

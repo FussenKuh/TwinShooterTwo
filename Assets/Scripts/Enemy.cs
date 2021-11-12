@@ -61,7 +61,6 @@ public class Enemy : MonoBehaviour
 
         if (TooFarAway())
         {
-            Debug.Log(name + " is too far away. Killing it off...");
             EnemyManager.Instance.Kill(gameObject);
             return;
         }
@@ -107,19 +106,20 @@ public class Enemy : MonoBehaviour
 
         if (currentHealth > 0)
         {
-            retValue = new Color((tint.r * (1f / currentHealth)), (tint.g * (1f / currentHealth)), (tint.b * (1f / currentHealth)));
+            retValue = new Color((tint.r * (1f / (currentHealth+1))), (tint.g * (1f / (currentHealth + 1))), (tint.b * (1f / (currentHealth + 1))));
         }
         return retValue;
     }
 
-    public void Hit(GameObject objectHit)
+    public void Hit(Collision2D collision, GameObject objectHit)
     {
         currentHealth--;
 
         SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
 
         sr.color = UpdateColor(objectHit.GetComponent<SpriteRenderer>().color);
-        
+
+
 
         if (currentHealth <= 0)
         {

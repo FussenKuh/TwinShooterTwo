@@ -45,6 +45,12 @@ public class PlayerInputHandler : MonoBehaviour
     [ReadOnly]
     float _elapsedTime = 0f;
 
+    [SerializeField]
+    int maxNumberOfBullets = 20;
+
+    [SerializeField]
+    int currentNumberOfBullets = 20;
+
 
     GameObject _shellParent;
 
@@ -56,6 +62,8 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         InitializeBulletAndShellContainers();
+
+        currentNumberOfBullets = maxNumberOfBullets;
     }
 
     void InitializeBulletAndShellContainers()
@@ -116,6 +124,12 @@ public class PlayerInputHandler : MonoBehaviour
         //playerInput.onDeviceRegained -= OnDeviceRegained;
     }
 
+
+    void UpdateBulletCount(int additionalBullets)
+    {
+        currentNumberOfBullets += additionalBullets;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -126,8 +140,9 @@ public class PlayerInputHandler : MonoBehaviour
             triggerDown += Time.deltaTime;
             triggerDown = Mathf.Min(5, triggerDown);
 
-            if (_elapsedTime > _fireRate)
+            if (_elapsedTime > _fireRate  && currentNumberOfBullets > 0)
             {
+                //TODO How does the player get bullets back? UpdateBulletCount(-1);
                 _elapsedTime = 0f;
                 GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_bulletPrefab, _bulletSpawnLocation.position, _turret.right, _speed, _angleVariation, 0);
                 tmpBullet.GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
@@ -141,18 +156,20 @@ public class PlayerInputHandler : MonoBehaviour
                     tmpBullet.transform.parent = _bulletParent.transform;
                 }
 
-                GameObject tmpShell = FKS.ProjectileUtils2D.SpawnProjectile(_shellPrefab, _shellSpawnLocation.position, FKS.Utils.UtilsClass.ApplyRotationToVector(_turret.right, 90), _shellSpeed, _shellAngleVariation, _shellSpeedVariation);
-                tmpShell.transform.rotation = _turret.rotation;
+                EffectsManager.Instance.BulletShell(_shellSpawnLocation.position, _turret.rotation);
 
-                try
-                {
-                    tmpShell.transform.parent = _shellParent.transform;
-                }
-                catch
-                {
-                    InitializeBulletAndShellContainers();
-                    tmpShell.transform.parent = _shellParent.transform;
-                }
+                //GameObject tmpShell = FKS.ProjectileUtils2D.SpawnProjectile(_shellPrefab, _shellSpawnLocation.position, FKS.Utils.UtilsClass.ApplyRotationToVector(_turret.right, 90), _shellSpeed, _shellAngleVariation, _shellSpeedVariation);
+                //tmpShell.transform.rotation = _turret.rotation;
+
+                //try
+                //{
+                //    tmpShell.transform.parent = _shellParent.transform;
+                //}
+                //catch
+                //{
+                //    InitializeBulletAndShellContainers();
+                //    tmpShell.transform.parent = _shellParent.transform;
+                //}
 
                 impulseMult = triggerDown.Remap(0f, 5f, 0.1f, 0.5f);
 

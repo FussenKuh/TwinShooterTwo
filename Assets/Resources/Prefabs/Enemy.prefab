@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8104537831461423622}
   - component: {fileID: 4166909509173338612}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 3979005597004014610}
   - component: {fileID: 5697454978490527002}
   - component: {fileID: 1915408545593866209}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 923271415803879068}
   - component: {fileID: 8166225218686713155}
   - component: {fileID: 7262399450808609270}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -309,6 +309,8 @@ MonoBehaviour:
   goal: {fileID: 0}
   detectionDistance: 15
   activePlayers: []
+  maxHealth: 3
+  currentHealth: 3
 --- !u!114 &923271415803879068
 MonoBehaviour:
   m_ObjectHideFlags: 0

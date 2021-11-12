@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4537396086696614309}
   - component: {fileID: 3285979489728320269}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7089475625678238183}
   - component: {fileID: 8747490872365589764}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Bullet Spawn Location
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 6801002205028351170}
   - component: {fileID: 7421757528210772393}
   - component: {fileID: 5731332238429301986}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -279,7 +279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5589042821723497184}
   - component: {fileID: 6747057654435472408}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Shell Spawn Location
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ GameObject:
   - component: {fileID: 2517489121235926320}
   - component: {fileID: -356285052795043966}
   - component: {fileID: 2999180947312178547}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -472,7 +472,11 @@ MonoBehaviour:
   _shellAngleVariation: 10
   _fireRate: 0.2
   _elapsedTime: 0
+  maxNumberOfBullets: 20
+  currentNumberOfBullets: 20
   playerInput: {fileID: 2517489121235926320}
+  impulseMult: 1
+  triggerDown: 0
   moveVector: {x: 0, y: 0}
   lookVector: {x: 0, y: 0}
   firing: 0

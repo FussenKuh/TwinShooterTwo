@@ -67,7 +67,9 @@ public class GameManager : Singleton<GameManager>
 
         //PlayerManager.Instance.SetPlayersActive(false);
 
-        FKS.SceneUtils.LoadScene("Level Scene");
+        //FKS.SceneUtils.LoadScene("Level Scene");
+
+        FKS.SceneUtilsVisuals.LoadScene("Level Scene");
     }
 
     // Update is called once per frame
