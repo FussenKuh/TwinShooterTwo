@@ -110,13 +110,16 @@ public class PlayerManager : Singleton<PlayerManager>
         GameObject tmp = Resources.Load("Prefabs/Player") as GameObject;
         playerPrefab = tmp.GetComponent<Player>();
 
-        pim = gameObject.AddComponent<PlayerInputManager>();
-        pim.playerPrefab = Resources.Load("Prefabs/Player") as GameObject;
-        pim.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
+        pim = GameObject.Instantiate(Resources.Load("Prefabs/PlayerInputManager") as GameObject, transform).GetComponent<PlayerInputManager>();
+
+        //pim = gameObject.AddComponent<PlayerInputManager>();
+        //pim.playerPrefab = Resources.Load("Prefabs/Player") as GameObject;
+        //pim.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
         pim.onPlayerJoined += OnPlayerJoined;
         pim.onPlayerLeft += OnPlayerLeft;
-
     }
+
+    public InputActionAsset asset;
 
     private void OnDestroy()
     {

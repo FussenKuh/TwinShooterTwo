@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _baseEntityMove: {fileID: 8166225218686713159}
-  _player: {fileID: 0}
+  _player: {fileID: -4335604627995087455}
   _turret: {fileID: 6801002205028351170}
   _turretRotationController: {fileID: 5731332238429301986}
   _bulletSpawnLocation: {fileID: 7089475625678238183}
@@ -531,6 +531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee63f86457d8b44abbb4503fec4c4a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentWeapon: {fileID: 11400000, guid: 5c07b96773ac0c9438f378a4ee7e5e1f, type: 2}
   playerInputHandler: {fileID: 0}
   atGoal: 0
 --- !u!114 &2517489121235926320

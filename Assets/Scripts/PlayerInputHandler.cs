@@ -53,8 +53,9 @@ public class PlayerInputHandler : MonoBehaviour
 
 
     GameObject _shellParent;
-
     GameObject _bulletParent;
+
+    SpriteRenderer sr;
 
     [SerializeField]
     PlayerInput playerInput;
@@ -83,6 +84,12 @@ public class PlayerInputHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        sr = gameObject.GetComponent<SpriteRenderer>();
+        if (sr == null)
+        {
+            Debug.LogError("Can't find the sprite renderer");
+        }
+
         impulseSource = GetComponent<Cinemachine.CinemachineImpulseSource>();
 
         this.MoveEvent += OnMoveEvent;
@@ -139,12 +146,16 @@ public class PlayerInputHandler : MonoBehaviour
             triggerDown += Time.deltaTime;
             triggerDown = Mathf.Min(5, triggerDown);
 
-            if (_elapsedTime > _fireRate  && currentNumberOfBullets > 0)
+            if (_elapsedTime > _player.currentWeapon.FireRate  && currentNumberOfBullets > 0)
             {
                 //TODO How does the player get bullets back? UpdateBulletCount(-1);
                 _elapsedTime = 0f;
-                GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_bulletPrefab, _bulletSpawnLocation.position, _turret.right, _speed, _angleVariation, 0);
-                tmpBullet.GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
+//                GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_bulletPrefab, _bulletSpawnLocation.position, _turret.right, _speed, _angleVariation, 0);
+                GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_player.currentWeapon.ProjectilePrefab, _bulletSpawnLocation.position, _turret.right, _player.currentWeapon.Speed, _player.currentWeapon.Spread, 0);
+                Bullet b = tmpBullet.GetComponent<Bullet>();
+                b.Weapon = _player.currentWeapon;
+                b.BulletTint = sr.color;
+
                 try
                 {
                     tmpBullet.transform.parent = _bulletParent.transform;

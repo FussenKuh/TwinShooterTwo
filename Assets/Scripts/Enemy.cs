@@ -66,6 +66,8 @@ public class Enemy : MonoBehaviour
     Rigidbody2D rb;
     Color origColor;
 
+    SpriteRenderer sr;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -74,7 +76,9 @@ public class Enemy : MonoBehaviour
 
         origColor = gameObject.GetComponent<SpriteRenderer>().color;
         rb = gameObject.GetComponent<Rigidbody2D>();
-        activePlayers = PlayerManager.Instance.Players;      
+        activePlayers = PlayerManager.Instance.Players;
+
+        sr = gameObject.GetComponent<SpriteRenderer>();
     }
 
     Vector3 searchGoal = Vector3.zero;
@@ -154,7 +158,7 @@ public class Enemy : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    Color UpdateColor(Color tint)
+    Color UpdateColor()
     {
         float newTint = ((float)currentHealth / maxHealth).Remap(0f, 1f, 0.3f, 0.8f);
         return new Color(newTint, newTint, newTint); 
@@ -162,9 +166,9 @@ public class Enemy : MonoBehaviour
 
 
 
-    public void Hit(Collision2D collision, GameObject objectHit)
+    public void Hit(Collision2D collision, WeaponData weaponData)
     {
-        int damage = Random.Range(3, 7);
+        int damage = weaponData.Damage;
         bool crit = FKS.Utils.UtilsClass.TestChance(30);
         if (crit)
         {
@@ -172,13 +176,10 @@ public class Enemy : MonoBehaviour
         }
 
         currentHealth -= damage;
-        
-
 
         MessagePopup.Create(gameObject.transform.position + new Vector3(0,gameObject.transform.localScale.y/2,0), damage.ToString(), crit );
 
-        SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
-        sr.color = origColor * UpdateColor(objectHit.GetComponent<SpriteRenderer>().color);
+        sr.color = origColor * UpdateColor();
 
         if (currentHealth <= 0)
         {

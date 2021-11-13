@@ -8,6 +8,9 @@ public class Player : MonoBehaviour
 
     public int MyID { get; set; }
 
+
+    public WeaponData currentWeapon;
+
     [SerializeField]
     PlayerInputHandler playerInputHandler;
 
@@ -45,10 +48,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    
+
 
     // Start is called before the first frame update
     void Start()
     {
+        
         playerInputHandler = GetComponent<PlayerInputHandler>();
         if (playerInputHandler == null)
         {
@@ -75,6 +81,38 @@ public class Player : MonoBehaviour
         //    GameManager.Instance.LevelCompleted();
         //}
         
+    }
+
+    private void OnTriggerEnter2D(Collider2D triggeredThing)
+    {
+
+        Debug.Log("Hit Trigger: " + triggeredThing.name);
+
+        var collectible = triggeredThing.gameObject.GetComponent<CollectibleBehavior>();
+        if ( collectible != null)
+        {
+            if (collectible.Item != null)
+            {
+                if (collectible.Item.Weapon != null)
+                {
+                    currentWeapon = collectible.Item.Weapon;
+                    MessagePopup.Create(triggeredThing.transform.position, "Picked up " + collectible.Item.Weapon.Name, false, 1f);
+                }
+                else
+                {
+                    Debug.Log("No Item.Weapon");
+                }
+                
+            }
+            else
+            {
+                Debug.Log("No Item");
+            }
+        }
+        else
+        {
+            Debug.Log("No collectibleBehavior");
+        }
     }
 }
 
