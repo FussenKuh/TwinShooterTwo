@@ -2,9 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using TMPro;
 
 public class Enemy : MonoBehaviour
 {
+    public bool EnableDebugText = false;
+    public TextMeshPro debugText;
+    [SerializeField]
+    float elapsedTime = 0f;
+    [SerializeField]
+    float idleDurration = 3f;
+    [SerializeField]
+    Vector3 startLocation;
+    [SerializeField]
+    float distanceThreshold = 0.5f;
+
+    void AmIStuck()
+    {
+        if (elapsedTime > idleDurration)
+        {
+            if (Vector3.Distance(startLocation, transform.position) >= distanceThreshold)
+            {
+                startLocation = transform.position;
+                elapsedTime = 0;
+            }
+            else
+            {
+                EffectsManager.Instance.EntitySpawn(transform.position, origColor);
+                //Debug.Log(name + " has been idle too long. We're killing it off");
+                EnemyManager.Instance.Kill(gameObject);
+            }
+        }
+    }
+
+
     static int uniqueID = 0;
 
     int myID = 0;
@@ -32,10 +63,18 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     int currentHealth = 3;
 
+    Rigidbody2D rb;
+    Color origColor;
+
     // Start is called before the first frame update
     void Start()
     {
-        activePlayers = PlayerManager.Instance.Players;
+        // Let the manager know that we exist
+        EnemyManager.Instance.AddEnemy(this);
+
+        origColor = gameObject.GetComponent<SpriteRenderer>().color;
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        activePlayers = PlayerManager.Instance.Players;      
     }
 
     Vector3 searchGoal = Vector3.zero;
@@ -58,9 +97,21 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
+        elapsedTime += Time.fixedDeltaTime;
+        debugText.SetText(rb.velocity.magnitude.ToString("N1") + (goal != null).ToString());
+        if (EnableDebugText)
+        {
+            debugText.enabled = true;
+        }
+        else
+        {
+            debugText.enabled = false;
+        }
+        AmIStuck();
 
         if (TooFarAway())
         {
+            EffectsManager.Instance.EntitySpawn(transform.position, origColor);
             EnemyManager.Instance.Kill(gameObject);
             return;
         }
@@ -75,6 +126,9 @@ public class Enemy : MonoBehaviour
         else
         {
             goal = null;
+            _baseEntityMoveToGoal.CancelMovement();
+//            Debug.Log(name + " Lost track of player");
+
             //if (Vector3.Distance(searchGoal, transform.position) > 10 || Vector3.Distance(searchGoal, transform.position) <= 1)
             //{
             //    searchGoal = FKS.Utils.Rand.RandomPointOnXYCircle(transform.position, 2);
@@ -102,27 +156,33 @@ public class Enemy : MonoBehaviour
 
     Color UpdateColor(Color tint)
     {
-        Color retValue = tint;
-
-        if (currentHealth > 0)
-        {
-            retValue = new Color((tint.r * (1f / (currentHealth+1))), (tint.g * (1f / (currentHealth + 1))), (tint.b * (1f / (currentHealth + 1))));
-        }
-        return retValue;
+        float newTint = ((float)currentHealth / maxHealth).Remap(0f, 1f, 0.3f, 0.8f);
+        return new Color(newTint, newTint, newTint); 
     }
+
+
 
     public void Hit(Collision2D collision, GameObject objectHit)
     {
-        currentHealth--;
+        int damage = Random.Range(3, 7);
+        bool crit = FKS.Utils.UtilsClass.TestChance(30);
+        if (crit)
+        {
+            damage = Mathf.RoundToInt(damage * 1.5f);
+        }
+
+        currentHealth -= damage;
+        
+
+
+        MessagePopup.Create(gameObject.transform.position + new Vector3(0,gameObject.transform.localScale.y/2,0), damage.ToString(), crit );
 
         SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
-
-        sr.color = UpdateColor(objectHit.GetComponent<SpriteRenderer>().color);
-
-
+        sr.color = origColor * UpdateColor(objectHit.GetComponent<SpriteRenderer>().color);
 
         if (currentHealth <= 0)
         {
+            EffectsManager.Instance.EnemyDeath(transform.position, origColor);
             EnemyManager.Instance.Kill(gameObject);
         }
     }

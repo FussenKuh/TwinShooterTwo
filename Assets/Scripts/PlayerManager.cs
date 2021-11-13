@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -62,7 +63,20 @@ public class PlayerManager : Singleton<PlayerManager>
 
         players.Add(playerInput.gameObject.GetComponent<Player>());
         players[players.Count - 1].MyID = playerInput.playerIndex;
+
+        Vector3 pos = cameraSystem.SystemCamera.transform.position;
+        pos.z = 0;
+        if (players.Count > 1)
+        {
+            pos = players[0].transform.position + Vector3.up;
+        }
+
+        players[players.Count - 1].transform.position = pos;
         cameraSystem.AddFollowTarget(players[players.Count - 1].transform);
+
+        EffectsManager.Instance.EntitySpawn(pos, playerInput.GetComponent<SpriteRenderer>().color);
+
+        StartCoroutine(DelayWelcome(pos, "Welcome " + playerInput.name, false, 0f));
 
         if (players.Count >= maxPlayers)
         {
@@ -116,15 +130,14 @@ public class PlayerManager : Singleton<PlayerManager>
 
     }
 
-    public void PlayerJoin()
+
+    IEnumerator DelayWelcome(Vector3 position, string message, bool critical, float delay = 1f)
     {
-        if (players.Count == 0)
-        {
-            Debug.Log("Adding player to game");
-            players.Add(GameObject.Instantiate(playerPrefab.gameObject, gameObject.transform).GetComponent<Player>());
-            cameraSystem.AddFollowTarget(players[players.Count - 1].transform);
-        }
+        Debug.Log("Delaying welcome");
+        yield return new WaitForSeconds(delay);
+        MessagePopup.Create(position, message, critical: false, duration: 1f);
     }
+
 
     public void RelocatePlayers(Vector3 location)
     {
@@ -139,7 +152,7 @@ public class PlayerManager : Singleton<PlayerManager>
         foreach (Player p in players)
         {
             Vector3 pos = new Vector3(
-                Random.Range(-trans.localScale.x * 0.30f, trans.localScale.x * 0.30f), Random.Range(-trans.localScale.y * 0.30f, trans.localScale.y * 0.30f), 0) + trans.position;
+                UnityEngine.Random.Range(-trans.localScale.x * 0.30f, trans.localScale.x * 0.30f), UnityEngine.Random.Range(-trans.localScale.y * 0.30f, trans.localScale.y * 0.30f), 0) + trans.position;
             p.transform.position = pos;
         }
     }

@@ -419,7 +419,6 @@ public class WorldSpawner : MonoBehaviour
             }
             else
             {
-                Debug.Log("Object Size: " + sr.size);
                 // The object has found a proper spot in the world! Finalize the object
                 nameIndex++;
                 tmp.transform.parent = worldContainer;
@@ -433,8 +432,6 @@ public class WorldSpawner : MonoBehaviour
                 else
                 {
                     int index = Random.Range(0, objectColors.Count);
-                    Debug.Log("ObjectColors Count: " + objectColors.Count);
-                    Debug.Log("Index: " + index);
                     sr.color = objectColors[index];
                 }
 

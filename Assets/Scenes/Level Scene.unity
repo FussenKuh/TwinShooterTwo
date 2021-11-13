@@ -424,7 +424,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 0}
   spawnDelay: 0.1
   cameraSystem: {fileID: 0}
-  maxNumberOfEnemies: 50
+  maxNumberOfEnemies: 20
   spawnDist: 10
 --- !u!4 &494470483
 Transform:
@@ -596,7 +596,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &976158187
 MonoBehaviour:

@@ -89,13 +89,12 @@ public class PlayerInputHandler : MonoBehaviour
         this.LookEvent += OnLookEvent;
 
         //playerInput = gameObject.GetComponent<PlayerInput>();
-        Debug.Log(name + ": Start called");
-
+        
         //playerInput.onControlsChanged += OnControlsChanged;
         //playerInput.onDeviceLost += OnDeviceLost;
         //playerInput.onDeviceRegained += OnDeviceRegained;
 
-        Debug.Log("Scheme: " + playerInput.currentControlScheme);
+        //Debug.Log("Scheme: " + playerInput.currentControlScheme);
 
     }
 
@@ -156,22 +155,10 @@ public class PlayerInputHandler : MonoBehaviour
                     tmpBullet.transform.parent = _bulletParent.transform;
                 }
 
-                EffectsManager.Instance.BulletShell(_shellSpawnLocation.position, _turret.rotation);
+                //                EffectsManager.Instance.BulletShell(_shellSpawnLocation.position, _turret.rotation);
 
-                //GameObject tmpShell = FKS.ProjectileUtils2D.SpawnProjectile(_shellPrefab, _shellSpawnLocation.position, FKS.Utils.UtilsClass.ApplyRotationToVector(_turret.right, 90), _shellSpeed, _shellAngleVariation, _shellSpeedVariation);
-                //tmpShell.transform.rotation = _turret.rotation;
 
-                //try
-                //{
-                //    tmpShell.transform.parent = _shellParent.transform;
-                //}
-                //catch
-                //{
-                //    InitializeBulletAndShellContainers();
-                //    tmpShell.transform.parent = _shellParent.transform;
-                //}
-
-                impulseMult = triggerDown.Remap(0f, 5f, 0.1f, 0.5f);
+                impulseMult = 0.2f;//triggerDown.Remap(0f, 5f, 0.1f, 0.5f);
 
                 impulseSource.GenerateImpulse(_turret.right * impulseMult);
 

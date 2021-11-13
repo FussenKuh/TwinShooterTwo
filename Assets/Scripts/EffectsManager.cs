@@ -8,6 +8,10 @@ public class EffectsManager : Singleton<EffectsManager>
     ParticleSystem bulletHit;
     [SerializeField]
     ParticleSystem bulletShell;
+    [SerializeField]
+    ParticleSystem enemyDeath;
+    [SerializeField]
+    ParticleSystem entitySpawn;
 
 
 
@@ -28,21 +32,15 @@ public class EffectsManager : Singleton<EffectsManager>
 
     public void BulletHit(Collision2D c)
     {
-        //var main = bulletHit.main; 
-        //ParticleSystem.MinMaxGradient tmpColor = bulletHit.main.startColor;
-        //tmpColor.colorMin = c.otherCollider.GetComponent<SpriteRenderer>().color;
-        //tmpColor.colorMax = c.collider.GetComponent<SpriteRenderer>().color;
-        //main.startColor = tmpColor;
-
         bulletHit.transform.position = c.contacts[0].point;
         bulletHit.transform.rotation = Quaternion.Euler(c.contacts[0].normal);
 
         var main = bulletHit.main;
         ParticleSystem.MinMaxGradient tmpColor = bulletHit.main.startColor;
-        tmpColor.colorMin = c.otherCollider.GetComponent<SpriteRenderer>().color;
-        tmpColor.colorMax = c.otherCollider.GetComponent<SpriteRenderer>().color;
-        main.startColor = tmpColor;
-        bulletHit.Emit(1);
+        //tmpColor.colorMin = c.otherCollider.GetComponent<SpriteRenderer>().color;
+        //tmpColor.colorMax = c.otherCollider.GetComponent<SpriteRenderer>().color;
+        //main.startColor = tmpColor;
+        //bulletHit.Emit(1);
         tmpColor.colorMin = c.collider.GetComponent<SpriteRenderer>().color;
         tmpColor.colorMax = c.collider.GetComponent<SpriteRenderer>().color;
         main.startColor = tmpColor;
@@ -50,7 +48,33 @@ public class EffectsManager : Singleton<EffectsManager>
 
     }
 
-    public float offset = 0;
+
+    public void EnemyDeath(Vector3 location, Color color)
+    {
+        var main = enemyDeath.main;
+        ParticleSystem.MinMaxGradient tmpColor = enemyDeath.main.startColor;
+
+        tmpColor.colorMin = color;
+        tmpColor.colorMax = new Color(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f);
+        main.startColor = tmpColor;
+
+        enemyDeath.transform.position = location;
+        enemyDeath.Emit(Random.Range(25, 35));
+    }
+
+    public void EntitySpawn(Vector3 location, Color color)
+    {
+        var main = entitySpawn.main;
+        ParticleSystem.MinMaxGradient tmpColor = entitySpawn.main.startColor;
+
+        tmpColor.colorMin = color;
+        tmpColor.colorMax = new Color(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f);
+        main.startColor = tmpColor;
+
+        entitySpawn.transform.position = location;
+        entitySpawn.Play();
+    }
+
     public void BulletShell(Vector3 location, Quaternion rotation)
     {
 

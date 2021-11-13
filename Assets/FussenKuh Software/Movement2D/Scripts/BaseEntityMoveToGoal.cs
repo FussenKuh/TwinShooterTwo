@@ -75,6 +75,11 @@ public class BaseEntityMoveToGoal : MonoBehaviour, IEntityMoveToGoal
         seekingGoal = true;
     }
 
+    public void CancelMovement()
+    {
+        seekingGoal = false;
+    }
+
     #endregion
 
     virtual protected void Awake()
@@ -110,15 +115,15 @@ public class BaseEntityMoveToGoal : MonoBehaviour, IEntityMoveToGoal
             return;
         }
 
-        if (distanceToGoal > lastDistanceToGoal)
-        {
-            //Debug.Log("Hit dist > lastDist");
-            // We've overshot the goal. So, report that we've hit the goal.
-            distanceToGoal = lastDistanceToGoal = int.MaxValue;
-            seekingGoal = false;
-            OnGoalReached?.Invoke(gameObject);
-            return;
-        }
+        //if (distanceToGoal > lastDistanceToGoal)
+        //{
+        //    //Debug.Log("Hit dist > lastDist");
+        //    // We've overshot the goal. So, report that we've hit the goal.
+        //    distanceToGoal = lastDistanceToGoal = int.MaxValue;
+        //    seekingGoal = false;
+        //    OnGoalReached?.Invoke(gameObject);
+        //    return;
+        //}
         
         if (seekingGoal)
         {
