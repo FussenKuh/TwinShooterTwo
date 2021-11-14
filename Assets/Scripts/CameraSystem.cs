@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CameraSystem : MonoBehaviour
 {
+
+    static bool _exists = false;
+
     [SerializeField]
     Camera _camera;
 
@@ -101,5 +104,17 @@ public class CameraSystem : MonoBehaviour
         calculatedBoundsV1 = _camera.OrthographicBounds();
         screenSize.x = Screen.width;
         screenSize.y = Screen.height;
+    }
+
+    private void Awake()
+    {
+        if (_exists)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            _exists = true;
+        }
     }
 }

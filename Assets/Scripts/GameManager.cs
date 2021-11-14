@@ -72,6 +72,14 @@ public class GameManager : Singleton<GameManager>
         FKS.SceneUtilsVisuals.LoadScene("Level Scene");
     }
 
+    public void GameOver()
+    {
+        if (PlayerManager.Instance.Players.Where(p => p.PlayerStats.Alive).ToArray().Length == 0)
+        {
+            FKS.SceneUtilsVisuals.LoadScene("Title Scene");
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {

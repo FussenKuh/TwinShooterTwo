@@ -141,44 +141,55 @@ public class PlayerInputHandler : MonoBehaviour
     {
         _elapsedTime += Time.deltaTime;
 
-        if (firing)
+        if (_player.PlayerStats.Alive)
         {
-            triggerDown += Time.deltaTime;
-            triggerDown = Mathf.Min(5, triggerDown);
 
-            if (_elapsedTime > _player.currentWeapon.FireRate  && currentNumberOfBullets > 0)
+            if (firing)
             {
-                //TODO How does the player get bullets back? UpdateBulletCount(-1);
-                _elapsedTime = 0f;
-//                GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_bulletPrefab, _bulletSpawnLocation.position, _turret.right, _speed, _angleVariation, 0);
-                GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_player.currentWeapon.ProjectilePrefab, _bulletSpawnLocation.position, _turret.right, _player.currentWeapon.Speed, _player.currentWeapon.Spread, 0);
-                Bullet b = tmpBullet.GetComponent<Bullet>();
-                b.Weapon = _player.currentWeapon;
-                b.BulletTint = sr.color;
+                triggerDown += Time.deltaTime;
+                triggerDown = Mathf.Min(5, triggerDown);
 
-                try
+                if (_elapsedTime > _player.currentWeapon.FireRate && currentNumberOfBullets > 0)
                 {
-                    tmpBullet.transform.parent = _bulletParent.transform;
+                    //TODO How does the player get bullets back? UpdateBulletCount(-1);
+                    _elapsedTime = 0f;
+                    //                GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_bulletPrefab, _bulletSpawnLocation.position, _turret.right, _speed, _angleVariation, 0);
+                    GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_player.currentWeapon.ProjectilePrefab, _bulletSpawnLocation.position, _turret.right, _player.currentWeapon.Speed, _player.currentWeapon.Spread, 0);
+                    Bullet b = tmpBullet.GetComponent<Bullet>();
+                    b.Weapon = _player.currentWeapon;
+                    b.BulletTint = sr.color;
+
+                    try
+                    {
+                        tmpBullet.transform.parent = _bulletParent.transform;
+                    }
+                    catch
+                    {
+                        InitializeBulletAndShellContainers();
+                        tmpBullet.transform.parent = _bulletParent.transform;
+                    }
+
+                    //                EffectsManager.Instance.BulletShell(_shellSpawnLocation.position, _turret.rotation);
+
+
+                    impulseMult = 0.2f;//triggerDown.Remap(0f, 5f, 0.1f, 0.5f);
+
+                    impulseSource.GenerateImpulse(_turret.right * impulseMult);
+
                 }
-                catch
-                {
-                    InitializeBulletAndShellContainers();
-                    tmpBullet.transform.parent = _bulletParent.transform;
-                }
-
-                //                EffectsManager.Instance.BulletShell(_shellSpawnLocation.position, _turret.rotation);
-
-
-                impulseMult = 0.2f;//triggerDown.Remap(0f, 5f, 0.1f, 0.5f);
-
-                impulseSource.GenerateImpulse(_turret.right * impulseMult);
-
             }
-        } 
+            else
+            {
+                triggerDown -= (Time.deltaTime * 2f);
+                triggerDown = Mathf.Max(0, triggerDown);
+            }
+        }
         else
         {
-            triggerDown -= (Time.deltaTime * 2f);
-            triggerDown = Mathf.Max(0, triggerDown);
+            if (_using)
+            {
+                GameManager.Instance.GameOver();
+            }
         }
     }
 
@@ -214,6 +225,7 @@ public class PlayerInputHandler : MonoBehaviour
     public event System.EventHandler<OnButtonArgs> FireEvent;
     public event System.EventHandler<OnDirectionArgs> MoveEvent;
     public event System.EventHandler<OnDirectionArgs> LookEvent;
+    public event System.EventHandler<OnButtonArgs> UseEvent;
 
 
     [SerializeField]
@@ -238,48 +250,76 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        //Debug.Log(context);
-        moveVector = context.ReadValue<Vector2>();
+        if (_player.PlayerStats.Alive)
+        {
+            //Debug.Log(context);
+            moveVector = context.ReadValue<Vector2>();
 
-        OnDirectionArgs args = new OnDirectionArgs();
-        args.Direction = context.ReadValue<Vector2>(); ;
-        args.Context = context;
-        MoveEvent?.Invoke(this, args);
+            OnDirectionArgs args = new OnDirectionArgs();
+            args.Direction = context.ReadValue<Vector2>(); ;
+            args.Context = context;
+            MoveEvent?.Invoke(this, args);
+        }
     }
 
     public void OnLook(InputAction.CallbackContext context)
     {
-        //Debug.Log(context);
-        lookVector = context.ReadValue<Vector2>();
-
-        if (playerInput.currentControlScheme == "Keyboard&Mouse")
+        if (_player.PlayerStats.Alive)
         {
-            Vector3 tmp = Camera.main.ScreenToWorldPoint(lookVector);
-            tmp.z = 0;
-            lookVector = FKS.ProjectileUtils3D.Direction(transform.position, tmp);
-        }
+            //Debug.Log(context);
+            lookVector = context.ReadValue<Vector2>();
 
-        OnDirectionArgs args = new OnDirectionArgs();
-        args.Direction = lookVector;
-        args.Context = context;
-        LookEvent?.Invoke(this, args);
+            if (playerInput.currentControlScheme == "Keyboard&Mouse")
+            {
+                Vector3 tmp = Camera.main.ScreenToWorldPoint(lookVector);
+                tmp.z = 0;
+                lookVector = FKS.ProjectileUtils3D.Direction(transform.position, tmp);
+            }
+
+            OnDirectionArgs args = new OnDirectionArgs();
+            args.Direction = lookVector;
+            args.Context = context;
+            LookEvent?.Invoke(this, args);
+        }
     }
 
     public void OnFire(InputAction.CallbackContext context)
     {
+        if (_player.PlayerStats.Alive)
+        {
+            if (context.started)
+            {
+                firing = true;
+            }
+            else if (context.canceled)
+            {
+                firing = false;
+            }
+
+            OnButtonArgs args = new OnButtonArgs();
+            args.Phase = context.phase;
+            args.Context = context;
+            FireEvent?.Invoke(this, args);
+        }
+    }
+
+    bool _using = false;
+
+    public void OnUse(InputAction.CallbackContext context)
+    {
         if (context.started)
         {
-            firing = true;
+            _using = true;
         }
         else if (context.canceled)
         {
-            firing = false;
+            _using = false;
         }
 
         OnButtonArgs args = new OnButtonArgs();
         args.Phase = context.phase;
         args.Context = context;
-        FireEvent?.Invoke(this, args);
+        UseEvent?.Invoke(this, args);
     }
 
 }

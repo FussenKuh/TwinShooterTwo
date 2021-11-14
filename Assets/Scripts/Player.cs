@@ -8,6 +8,12 @@ public class Player : MonoBehaviour
 
     public int MyID { get; set; }
 
+    [SerializeField]
+    PlayerStats _playerStatsSO;
+
+    PlayerStats.StatData _playerStats;
+
+    public PlayerStats.StatData PlayerStats { get { return _playerStats; } }
 
     public WeaponData currentWeapon;
 
@@ -23,6 +29,9 @@ public class Player : MonoBehaviour
 
         MyID = uniqueID;
         uniqueID++;
+
+        _playerStats = _playerStatsSO.Data;
+
     }
 
     private void OnDestroy()
@@ -39,7 +48,7 @@ public class Player : MonoBehaviour
     }
 
 
-    void OnFire(object sender, PlayerInputHandler.OnButtonArgs args)
+    void OnUse(object sender, PlayerInputHandler.OnButtonArgs args)
     {
         if (atGoal && args.Phase == UnityEngine.InputSystem.InputActionPhase.Started)
         {
@@ -63,33 +72,43 @@ public class Player : MonoBehaviour
         }
         else
         {
-            playerInputHandler.FireEvent += OnFire;
+            playerInputHandler.UseEvent += OnUse;
         }
 
 
 
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void Hit(WeaponData weaponData)
     {
-        //if (atGoal & Input.GetKeyDown(KeyCode.G))
-        //{
+        if (_playerStats.Alive)
+        {
+            int damage = weaponData.Damage;
+            _playerStats.Health -= damage;
+            Debug.Log("Ow! Remaining Health: " + _playerStats.Health);
+            MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), damage.ToString(), false);
+        }
 
-        //    atGoal = false;
-
-        //    GameManager.Instance.LevelCompleted();
-        //}
-        
+        if (!_playerStats.Alive)
+        {
+            _playerStats.Health = 1; // TODO FOR NOW, LETS NEVER LET THE PLAYER DIE!
+            MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), "I Should Be Dead, Jim!", false);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D triggeredThing)
     {
+        Debug.Log(_playerStats.Name + "("+ MyID + ") triggered: " + triggeredThing.name);
 
-        Debug.Log("Hit Trigger: " + triggeredThing.name);
+        HandleCollectible(triggeredThing);
 
+    }
+
+    private void HandleCollectible(Collider2D triggeredThing)
+    {
         var collectible = triggeredThing.gameObject.GetComponent<CollectibleBehavior>();
-        if ( collectible != null)
+        if (collectible != null)
         {
             if (collectible.Item != null)
             {
@@ -98,20 +117,7 @@ public class Player : MonoBehaviour
                     currentWeapon = collectible.Item.Weapon;
                     MessagePopup.Create(triggeredThing.transform.position, "Picked up " + collectible.Item.Weapon.Name, false, 1f);
                 }
-                else
-                {
-                    Debug.Log("No Item.Weapon");
-                }
-                
             }
-            else
-            {
-                Debug.Log("No Item");
-            }
-        }
-        else
-        {
-            Debug.Log("No collectibleBehavior");
         }
     }
 }

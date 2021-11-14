@@ -652,6 +652,7 @@ MonoBehaviour:
   idleDurration: 3
   startLocation: {x: 0, y: 0, z: 0}
   distanceThreshold: 0.5
+  _enemyStatsSO: {fileID: 11400000, guid: aa7212f99d7df3c4d95181f6c3f469eb, type: 2}
   _baseEntityMoveToGoal: {fileID: 923271415803879068}
   _turret: {fileID: 3979005597004014610}
   _turretRotationController: {fileID: 1915408545593866209}

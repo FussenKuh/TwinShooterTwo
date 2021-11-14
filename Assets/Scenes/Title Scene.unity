@@ -1053,24 +1053,25 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<size=70%>Keyboard Controls
+  m_text: '<size=70%><color=yellow>Keyboard Controls</color>
 
-    Move - WSAD or Arrow Keys
-
-    Look -
-    Mouse position
+    Move & Look - WSAD
+    or Arrow Keys & Mouse
 
     Shoot - Left mouse button
 
+    Use - Space
 
-    Gamepad Controls
 
-    Move
-    - Left stick
+    <color=yellow>Gamepad
+    Controls</color>
 
-    Look - Right stick
+    Move & Look - Left and right sticks
 
-    Shoot - Right trigger
+    Shoot - Right
+    trigger
+
+    Use - A
 
     </size>'
   m_isRightToLeft: 0
@@ -1946,7 +1947,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press any key or button to join<size=80%>
+  m_text: Press <color=yellow>-space-</color> or  <color=yellow>-a-</color> on your
+    gamepad to join<size=80%>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5381753c884415b4f9c4b8bf20fbaf90, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 8c11fda479366494f8014b242e2ac87d, type: 2}

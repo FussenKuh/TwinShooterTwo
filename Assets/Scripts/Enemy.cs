@@ -17,6 +17,15 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     float distanceThreshold = 0.5f;
 
+    [SerializeField]
+    EnemyStats _enemyStatsSO;
+    [SerializeField]
+    EnemyStats.StatData _enemyStats;
+
+    float timeSinceLastAttack = 0;
+
+    public EnemyStats.StatData EnemyStats { get { return _enemyStats; } }
+
     void AmIStuck()
     {
         if (elapsedTime > idleDurration)
@@ -39,7 +48,7 @@ public class Enemy : MonoBehaviour
     static int uniqueID = 0;
 
     int myID = 0;
-    int MyID { get; }
+    int MyID { get { return myID; } }
 
     [SerializeField]
     BaseEntityMoveToGoal _baseEntityMoveToGoal = null;
@@ -79,6 +88,8 @@ public class Enemy : MonoBehaviour
         activePlayers = PlayerManager.Instance.Players;
 
         sr = gameObject.GetComponent<SpriteRenderer>();
+
+        StartCoroutine(Attack());
     }
 
     Vector3 searchGoal = Vector3.zero;
@@ -101,6 +112,7 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
+        timeSinceLastAttack += Time.fixedDeltaTime;
         elapsedTime += Time.fixedDeltaTime;
         debugText.SetText(rb.velocity.magnitude.ToString("N1") + (goal != null).ToString());
         if (EnableDebugText)
@@ -120,7 +132,7 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        List<Player> nearMe = activePlayers.Where(p => Vector3.Distance(p.transform.position, gameObject.transform.position) <= detectionDistance)
+        List<Player> nearMe = activePlayers.Where(p => Vector3.Distance(p.transform.position, gameObject.transform.position) <= detectionDistance).Where(p => p.PlayerStats.Alive)
             .OrderByDescending(p => Vector3.Distance(p.transform.position, gameObject.transform.position)).ToList();
 
         if (nearMe.Count > 0)
@@ -155,16 +167,69 @@ public class Enemy : MonoBehaviour
 
         gameObject.name = "Enemy - " + myID.ToString("D3");
 
-        currentHealth = maxHealth;
+        _enemyStats = _enemyStatsSO.Stats;
+        currentHealth = _enemyStats.StartingHealth;
     }
 
     Color UpdateColor()
     {
-        float newTint = ((float)currentHealth / maxHealth).Remap(0f, 1f, 0.3f, 0.8f);
+        float newTint = ((float)currentHealth / _enemyStats.StartingHealth).Remap(0f, 1f, 0.3f, 0.8f);
         return new Color(newTint, newTint, newTint); 
     }
 
+    Player attackThisPlayer = null;
+    IEnumerator Attack()
+    {
+        while (true)
+        {
+            if (attackThisPlayer != null)
+            {
+                if (timeSinceLastAttack >= _enemyStats.Weapon.FireRate)
+                {
+                    timeSinceLastAttack = 0;
+                    attackThisPlayer.Hit(_enemyStats.Weapon);
+                }
+                
+            }
+            yield return new WaitForEndOfFrame();
+        }
+    }
 
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        
+
+        HandlePlayer(collision, true);
+    }
+
+    private void HandlePlayer(Collision2D collision, bool entering)
+    {
+        var player = collision.gameObject.GetComponent<Player>();
+        
+        if (entering)
+        {
+            if (player != null)
+            {
+                // We found a player component, so cache it away so we can attack it
+                Debug.Log(_enemyStats.Name + "(" + MyID + ") collided with " + collision.gameObject.name);
+                attackThisPlayer = player;
+            }
+        }
+        else
+        {
+            if (player == attackThisPlayer)
+            {
+                // The player we were attacking has left. Delete him from our cache so we don't continue to attack him
+                attackThisPlayer = null;
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        HandlePlayer(collision, false);
+    }
 
     public void Hit(Collision2D collision, WeaponData weaponData)
     {

@@ -102,7 +102,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Goal<size=50%>
 
-    press ''fire'' to get to the next level</size>'
+    press ''Use'' to get to the next level</size>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5381753c884415b4f9c4b8bf20fbaf90, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e86a7e1372a1e884b834a2dd868be88a, type: 2}

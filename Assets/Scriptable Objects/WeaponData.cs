@@ -38,6 +38,10 @@ public class WeaponData : ScriptableObject, ISerializationCallbackReceiver
 	[SerializeField]
 	int damageMax = 1;
 
+	[Tooltip("Do damage to anyone within this radius")]
+	[SerializeField]
+	float damageRadius = 0;
+
 	public string Name { get { return weaponName; } }
 	public GameObject ProjectilePrefab { get { return projectilePrefab; } }
 	public float Speed { get { return speed; } }
@@ -46,7 +50,8 @@ public class WeaponData : ScriptableObject, ISerializationCallbackReceiver
 	public float FireRate { get { return fireRate; } }
 	public int DamageMin { get { return damageMin; } }
 	public int DamageMax { get { return damageMax; } }
-	public int Damage { get { return UnityEngine.Random.Range(damageMin, damageMax); } }
+	public float DamageRadius { get { return damageRadius; } }
+	public int Damage { get { return UnityEngine.Random.Range(damageMin, damageMax + 1); } }
 
 
 	public void OnAfterDeserialize() { }

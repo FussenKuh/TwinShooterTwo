@@ -109,7 +109,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6148911515905874889}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.794, y: 0, z: 0}
+  m_LocalPosition: {x: 0.9, y: 0, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -531,6 +531,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee63f86457d8b44abbb4503fec4c4a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerStatsSO: {fileID: 11400000, guid: c5de84eb13011d34aa697897e9cca809, type: 2}
+  health: 0
   currentWeapon: {fileID: 11400000, guid: 5c07b96773ac0c9438f378a4ee7e5e1f, type: 2}
   playerInputHandler: {fileID: 0}
   atGoal: 0
@@ -683,6 +685,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: fb3ee0ea-a5ec-4ce4-ad0e-2bc085399f01
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8166225218686713152}
+        m_TargetAssemblyTypeName: PlayerInputHandler, Assembly-CSharp
+        m_MethodName: OnUse
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: bb898ad5-e7cf-43ab-bf3a-e07fef065f2d
+    m_ActionName: Player/Use[/XInputControllerWindows/buttonSouth,/XInputControllerWindows1/buttonSouth,/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
