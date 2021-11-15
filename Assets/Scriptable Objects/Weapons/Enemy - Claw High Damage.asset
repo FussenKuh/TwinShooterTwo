@@ -17,6 +17,7 @@ MonoBehaviour:
   speed: 0
   spread: 0
   range: 0
-  fireRate: 0.5
+  fireRate: 0.3
   damageMin: 1
   damageMax: 2
+  damageRadius: 0

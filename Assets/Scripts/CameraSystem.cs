@@ -87,6 +87,11 @@ public class CameraSystem : MonoBehaviour
         return retVal;
     }
 
+    public void Reset()
+    {
+        SetCameraBounds(new Vector3(0, 6, 0), new Vector2(45, 40));
+        _virtualCamera.transform.position = new Vector3(0, 0, -10);
+    }
 
     // Start is called before the first frame update
     void Start()

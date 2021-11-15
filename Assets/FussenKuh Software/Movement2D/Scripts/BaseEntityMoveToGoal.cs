@@ -21,6 +21,7 @@ public class BaseEntityMoveToGoal : MonoBehaviour, IEntityMoveToGoal
     [Tooltip("The entity's goal position")]
     protected Vector3 goal;
 
+    public float MaxMovementSpeed { get { return maxMovementSpeed; } set { maxMovementSpeed = value; } }
 
     [SerializeField]
     protected float goalDistanceThreshold = 1f;

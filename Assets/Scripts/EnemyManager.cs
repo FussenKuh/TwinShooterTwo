@@ -27,6 +27,8 @@ public class EnemyManager : Singleton<EnemyManager>
 
     public void Initialize()
     {
+        
+
         var prefabs = Resources.LoadAll("Prefabs/Enemies",typeof(GameObject));
 
         Debug.Log("Loaded " + prefabs.Length + " Enemy prefabs");
@@ -134,7 +136,51 @@ public class EnemyManager : Singleton<EnemyManager>
     {
         if (enemies.Count < maxNumberOfEnemies)
         {
+
+            // get list of available grid positions
+            int x, y;
+            level.grid.GetXY(PlayerManager.Instance.AveragePlayersLocation, out x, out y);
+            List<GridObject> availableSpots = new List<GridObject>();
+
+            for (int a = x - (int)spawnDist; a <= x + (int)spawnDist; a++)
+            {
+                for (int b = y - (int)spawnDist; b <= y + (int)spawnDist; b++)
+                {
+
+                    GridObject tmpGO = level.grid.GetGridObject(a, b);
+                    if (tmpGO != null)
+                    {
+                        if (tmpGO.Walkable)
+                        {
+                            availableSpots.Add(tmpGO);
+                           
+                        }
+                    }
+                }
+            }
+
+            //foreach (GridObject g in availableSpots)
+            //{
+            //    Vector3 pos = level.grid.GetWorldCenterPosition(g.X, g.Y);
+            //    var tmp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //    tmp.transform.position = pos;
+            //    Destroy(tmp, 0.1f);
+            //}
+
             Vector3 desiredPos = RandomPointOnXYCircle(PlayerManager.Instance.AveragePlayersLocation, spawnDist);
+            // pick one
+            if (availableSpots.Count > 0)
+            {
+                //Debug.Log("Found " + availableSpots.Count + " locations");
+                desiredPos = level.grid.GetWorldCenterPosition(availableSpots[Random.Range(0, availableSpots.Count - 1)].X, availableSpots[Random.Range(0, availableSpots.Count - 1)].Y);
+            }
+            else
+            {
+                Debug.LogWarning("Didn't find any available spots on the grid. What's up with that?");
+            }
+
+
+            
             GridObject go = level.grid.GetGridObject(desiredPos);
 
             int tries = 0;
@@ -159,7 +205,7 @@ public class EnemyManager : Singleton<EnemyManager>
             else
             {
                 // We've randomly chosen a place outside of the level boundary. Don't do anything
-                //Debug.LogError("No grid object defined at " + desiredPos);
+                Debug.LogError("No grid object defined at " + desiredPos);
             }
         }
 
@@ -188,6 +234,7 @@ public class EnemyManager : Singleton<EnemyManager>
     void Start()
     {
         Initialize();
+        GameManager.Instance.AddToTotalDamage(0);
     }
 
 
@@ -230,6 +277,7 @@ public class EnemyManager : Singleton<EnemyManager>
             
         }
     }
+
 
     // Update is called once per frame
     void Update()
