@@ -25,6 +25,8 @@ public class PlayerManager : Singleton<PlayerManager>
     [SerializeField]
     int maxPlayers = 2;
 
+    bool initialized = false;
+
     /// <summary>
     /// The average location of all players. i.e. Add all player position vectors and divide by number of players
     /// </summary>
@@ -53,9 +55,30 @@ public class PlayerManager : Singleton<PlayerManager>
     void OnPlayerJoined(PlayerInput playerInput)
     {
 
-        //pim.DisableJoining();
-
         Debug.Log("Player " + playerInput.playerIndex + " Joined.");
+
+        if (playerInput.currentControlScheme == "Keyboard&Mouse")
+        {
+            string middleText =
+                "<size=70%>\n\n\n\n\n\n\n\n\n\n" +
+                "<color=yellow> Keyboard Controls </color>\n" +
+                "<color=green>Move & Look</color> - WSAD or Arrow Keys & Mouse\n" +
+                "<color=green>Shoot</color> - Left mouse button\n" +
+                "<color=green>Use</color> - Space</size>";
+
+            StatsOverlay.Instance.UpdateMiddleText(middleText);
+        }
+        else
+        {
+            string middleText =
+                "<size=70%>\n\n\n\n\n\n\n\n\n\n" +
+                "<color=yellow>Gamepad Controls </color>\n" +
+                "<color=green>Move & Look</color> - Left and right sticks\n" +
+                "<color=green>Shoot</color> - Right trigger\n" +
+                "<color=green>Use</color> - A</size>";
+
+            StatsOverlay.Instance.UpdateMiddleText(middleText);
+        }
 
         playerInput.transform.parent = gameObject.transform;
         playerInput.transform.localPosition = Vector3.zero;
@@ -68,13 +91,13 @@ public class PlayerManager : Singleton<PlayerManager>
         pos.z = 0;
         if (players.Count > 1)
         {
-            pos = players[0].transform.position + Vector3.up;
+            pos = players[0].transform.position + (Vector3.up * 4);
         }
 
         players[players.Count - 1].transform.position = pos;
         cameraSystem.AddFollowTarget(players[players.Count - 1].transform);
 
-        EffectsManager.Instance.EntitySpawn(pos, playerInput.GetComponent<SpriteRenderer>().color);
+
 
         StartCoroutine(DelayWelcome(pos, "Welcome " + playerInput.name, false, 0f));
 
@@ -88,35 +111,65 @@ public class PlayerManager : Singleton<PlayerManager>
     {
         Debug.LogWarning("Player " + playerInput.playerIndex + " Left. We're currently not doing anything about this!");
 
-        //players.Add(playerInput.gameObject.GetComponent<Player>());
-        //cameraSystem.AddFollowTarget(players[players.Count - 1].transform);
+        players.Remove(playerInput.GetComponent<Player>());
+        cameraSystem.RemoveFollowTarget(playerInput.transform);
+
+        if (players.Count < maxPlayers)
+        {
+            pim.EnableJoining();
+        }
     }
 
+    public void SetPlayerJoin(bool canJoin)
+    {
+        if (canJoin && players.Count < maxPlayers)
+        {
+            pim.EnableJoining();
+        }
+        else
+        {
+            pim.DisableJoining();
+        }
+    }
 
     public void Initialize()
     {
         Debug.Log("PlayerManager - Calling Initialize");
 
-        cameraSystem = GameObject.Find("Main Camera System").GetComponent<CameraSystem>();
-        if (cameraSystem == null)
+        if (!initialized)
         {
-            Debug.LogError("PlayerManager: Cannot locate the Main Camera System");
+            initialized = true;
+            cameraSystem = GameObject.Find("Main Camera System").GetComponent<CameraSystem>();
+            if (cameraSystem == null)
+            {
+                Debug.LogError("PlayerManager: Cannot locate the Main Camera System");
+            }
+            else
+            {
+                DontDestroyOnLoad(cameraSystem.gameObject);
+            }
+
+            GameObject tmp = Resources.Load("Prefabs/Player") as GameObject;
+            playerPrefab = tmp.GetComponent<Player>();
+
+            pim = GameObject.Instantiate(Resources.Load("Prefabs/PlayerInputManager") as GameObject, transform).GetComponent<PlayerInputManager>();
+
+            //pim = gameObject.AddComponent<PlayerInputManager>();
+            //pim.playerPrefab = Resources.Load("Prefabs/Player") as GameObject;
+            //pim.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
+            pim.onPlayerJoined += OnPlayerJoined;
+            pim.onPlayerLeft += OnPlayerLeft;
         }
         else
         {
-            DontDestroyOnLoad(cameraSystem.gameObject);
+
+            RelocatePlayers(Vector3.zero);
+            for (int i= players.Count -1; i >= 0; i--)
+            {
+                Destroy(players[i].gameObject, 0.1f);
+            }
+            players.Clear();
         }
-
-        GameObject tmp = Resources.Load("Prefabs/Player") as GameObject;
-        playerPrefab = tmp.GetComponent<Player>();
-
-        pim = GameObject.Instantiate(Resources.Load("Prefabs/PlayerInputManager") as GameObject, transform).GetComponent<PlayerInputManager>();
-
-        //pim = gameObject.AddComponent<PlayerInputManager>();
-        //pim.playerPrefab = Resources.Load("Prefabs/Player") as GameObject;
-        //pim.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
-        pim.onPlayerJoined += OnPlayerJoined;
-        pim.onPlayerLeft += OnPlayerLeft;
     }
 
     public InputActionAsset asset;

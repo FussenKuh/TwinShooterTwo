@@ -460,7 +460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidBody: {fileID: 8166225218686713155}
   _movementAcceleration: 10
-  _maxMovementSpeed: 2
+  _maxMovementSpeed: 3
   _moving: 0
   _drawDebugGizmo: 0
   currentSpeed: 0
@@ -483,6 +483,7 @@ MonoBehaviour:
   startLocation: {x: 0, y: 0, z: 0}
   distanceThreshold: 0.5
   _enemyStatsSO: {fileID: 11400000, guid: ceebe50418541bb418fa017eb61b515d, type: 2}
+  timeSinceLastAttack: 0
   _baseEntityMoveToGoal: {fileID: 923271415803879068}
   _turret: {fileID: 3979005597004014610}
   _turretRotationController: {fileID: 1915408545593866209}
@@ -491,6 +492,7 @@ MonoBehaviour:
   activePlayers: []
   maxHealth: 20
   currentHealth: 20
+  attackThisPlayer: {fileID: 0}
 --- !u!114 &923271415803879068
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,6 +6,12 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
 
+    public int highScore = 0;
+    public int currentScore = 0;
+
+    public int highDamage = 0;
+    public int currentDamage = 0;
+
     public enum GameStates { PAUSED, GAMEOVER, PLAYING, LOADING };
 
     //static bool managerCreated = false;
@@ -37,18 +43,32 @@ public class GameManager : Singleton<GameManager>
 
     public void LevelCompleted()
     {
+        currentScore++;
+
+
+
         LoadLevel();
     }
 
 
     public void LevelLoaded(WorldSpawner level)
     {
+
+        string upperLeftText = "<size=70%>---Current---\nLevel <color=yellow>"
+            + Instance.currentScore.ToString("D5")
+            + "</color>\nDamage <color=yellow>"
+            + Instance.currentDamage.ToString("D5") + "</color></size>";
+
+        StatsOverlay.Instance.UpdateUpperLeftText(upperLeftText);
+        StatsOverlay.Instance.UpdateBottomText("");
+        StatsOverlay.Instance.UpdateUpperRightText("");
+        StatsOverlay.Instance.UpdateMiddleText("");
+
+        Instance.AddToTotalDamage(0);
+
         CurrentLevel = level;
 
         PlayerManager.Instance.RelocatePlayers(CurrentLevel.StartPoint.transform);
-        
-        //PlayerManager.Instance.SetPlayersActive(true);
-
     }
 
     public void LoadLevel()
@@ -65,9 +85,7 @@ public class GameManager : Singleton<GameManager>
         //LevelSettings.worldWidth = Random.Range(300, 400);
         //LevelSettings.worldHeight = Random.Range(300, 400);
 
-        //PlayerManager.Instance.SetPlayersActive(false);
-
-        //FKS.SceneUtils.LoadScene("Level Scene");
+        PlayerManager.Instance.SetPlayerJoin(false);
 
         FKS.SceneUtilsVisuals.LoadScene("Level Scene");
     }
@@ -76,8 +94,35 @@ public class GameManager : Singleton<GameManager>
     {
         if (PlayerManager.Instance.Players.Where(p => p.PlayerStats.Alive).ToArray().Length == 0)
         {
+            if (currentScore > highScore)
+            {
+                highScore = currentScore;
+            }
+
+            if (currentDamage > highDamage)
+            {
+                highDamage = currentDamage;
+            }
+
+            currentScore = 0;
+            currentDamage = 0;
+
             FKS.SceneUtilsVisuals.LoadScene("Title Scene");
         }
+    }
+
+
+    public void AddToTotalDamage(int dmg)
+    {
+        currentDamage += dmg;
+
+        string upperLeftText = "<size=70%>---Current---\nLevel <color=yellow>"
+            + Instance.currentScore.ToString("D5")
+            + "</color>\nDamage <color=yellow>"
+            + Instance.currentDamage.ToString("D5") + "</color></size>";
+
+        StatsOverlay.Instance.UpdateUpperLeftText(upperLeftText);
+//        Debug.Log("Total Dmg: " + currentDamage);
     }
 
     // Update is called once per frame

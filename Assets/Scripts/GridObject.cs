@@ -18,6 +18,8 @@ public class GridObject
     private bool occupied;
     public bool Occupied { get { return occupied; } set { occupied = value; grid.TriggerGridObjectChanged(x, y); } }
 
+    public int X { get { return x; } }
+    public int Y { get { return y; } }
 
     public GridObject(Grid<GridObject> grid, int x, int y)
     {

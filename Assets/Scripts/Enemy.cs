@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour
     EnemyStats _enemyStatsSO;
     [SerializeField]
     EnemyStats.StatData _enemyStats;
-
+    [SerializeField]
     float timeSinceLastAttack = 0;
 
     public EnemyStats.StatData EnemyStats { get { return _enemyStats; } }
@@ -88,6 +88,14 @@ public class Enemy : MonoBehaviour
         activePlayers = PlayerManager.Instance.Players;
 
         sr = gameObject.GetComponent<SpriteRenderer>();
+
+        if (_enemyStats.Weapon.FireRate >= idleDurration)
+        {
+            // We want to ensure that our idle duration is longer than our fire rate
+            idleDurration = _enemyStats.Weapon.FireRate * (1.5f);
+        }
+
+        _baseEntityMoveToGoal.MaxMovementSpeed *= (Random.Range(1f, 2f));
 
         StartCoroutine(Attack());
     }
@@ -177,6 +185,7 @@ public class Enemy : MonoBehaviour
         return new Color(newTint, newTint, newTint); 
     }
 
+    [SerializeField]
     Player attackThisPlayer = null;
     IEnumerator Attack()
     {
@@ -187,6 +196,7 @@ public class Enemy : MonoBehaviour
                 if (timeSinceLastAttack >= _enemyStats.Weapon.FireRate)
                 {
                     timeSinceLastAttack = 0;
+                    elapsedTime = 0; // We're attacking something, so we're obviously not idle.
                     attackThisPlayer.Hit(_enemyStats.Weapon);
                 }
                 
@@ -212,7 +222,7 @@ public class Enemy : MonoBehaviour
             if (player != null)
             {
                 // We found a player component, so cache it away so we can attack it
-                Debug.Log(_enemyStats.Name + "(" + MyID + ") collided with " + collision.gameObject.name);
+//                Debug.Log(_enemyStats.Name + "(" + MyID + ") collided with " + collision.gameObject.name);
                 attackThisPlayer = player;
             }
         }
@@ -240,9 +250,14 @@ public class Enemy : MonoBehaviour
             damage = Mathf.RoundToInt(damage * 1.5f);
         }
 
-        currentHealth -= damage;
+        int tmpHealth = currentHealth;
 
-        MessagePopup.Create(gameObject.transform.position + new Vector3(0,gameObject.transform.localScale.y/2,0), damage.ToString(), crit );
+        MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), damage.ToString(), crit);
+
+        if (damage > currentHealth) { damage = currentHealth; }
+        GameManager.Instance.AddToTotalDamage(damage);
+
+        currentHealth -= damage;
 
         sr.color = origColor * UpdateColor();
 

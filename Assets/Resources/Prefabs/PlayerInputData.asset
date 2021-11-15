@@ -9,15 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eee8d7044b60e584aae41ae2a9b69eae, type: 3}
-  m_Name: Enemy - Claw
+  m_Script: {fileID: 11500000, guid: 5b8a64a630721de409cf6e17e0add133, type: 3}
+  m_Name: PlayerInputData
   m_EditorClassIdentifier: 
-  weaponName: Claw
-  projectilePrefab: {fileID: 0}
-  speed: 0
-  spread: 0
-  range: 0
-  fireRate: 1
-  damageMin: 1
-  damageMax: 4
-  damageRadius: 0
+  MoveActive: 0
+  MoveVector: {x: 0, y: 0}
+  LookActive: 0
+  LookVector: {x: 0, y: 0}
+  FireActive: 0
+  UseActive: 0
