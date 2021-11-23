@@ -57,11 +57,11 @@ public class Player : MonoBehaviour, IEntity
         {
             case 0:
                 // Make a blue-ish player
-                _entityStats.StartingColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), 1);
+                _entityStats.StartingColor = new Color(Random.Range(0f, 0.6f), Random.Range(0f, 0.6f), 1);
                 break;
             case 1:
                 // Make a green-ish player
-                _entityStats.StartingColor = new Color(Random.Range(0f, 1f), 1, Random.Range(0f, 1f));
+                _entityStats.StartingColor = new Color(Random.Range(0f, 0.6f), 1, Random.Range(0f, 0.6f));
                 break;
         }
 
@@ -117,6 +117,12 @@ public class Player : MonoBehaviour, IEntity
         {
             playerInputHandler.UseEvent += OnUse;
         }
+
+
+        ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
+        var main = ps.main;
+        main.startColor = EntityInfo.StartingColor;
+
     }
 
 
@@ -135,9 +141,9 @@ public class Player : MonoBehaviour, IEntity
             MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), "I Should Be Dead, Jim!", false);
             if (PlayerManager.Instance.Players.Where(p => p.EntityInfo.Alive).ToArray().Length == 0)
             {
-                StatsOverlay.Instance.UpdateBottomText
+                StatsOverlay.Instance.UpdateMiddleText
                     (
-                    "<size=300%><color=green>g</color><color=blue>a</color><color=red>m</color><color=yellow>e</color> <color=orange>O</color><color=#7f00ff>v</color><color=#0083FF>e</color><color=#ff07ff>r</color>\n\n\n\n\n\n\n</size>"
+                    "<color=green>g</color><color=blue>a</color><color=red>m</color><color=yellow>e</color> <color=orange>O</color><color=#7f00ff>v</color><color=#0083FF>e</color><color=#ff07ff>r</color>"
                     );
             }
         }
@@ -161,10 +167,18 @@ public class Player : MonoBehaviour, IEntity
         energyBar.transform.localScale = tmpScale;
     }
 
-    Color UpdateColor()
+    void UpdateColor()
     {
         float newTint = ((float)_entityStats.Health / _entityStats.StartingHealth).Remap(0f, 1f, 0.3f, 0.8f);
-        return new Color(newTint, newTint, newTint);
+
+        Color tmp = _entityStats.StartingColor * newTint;
+        tmp.a = 1;
+        _entityStats.Color = tmp;
+        sr.color = _entityStats.Color;
+
+        ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
+        var main = ps.main;
+        main.startColor = _entityStats.Color;
     }
 
     public void OnHit(WeaponData weaponData)
@@ -177,8 +191,7 @@ public class Player : MonoBehaviour, IEntity
 
             _entityStats.Health -= damage.damage;
             MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), Mathf.CeilToInt(damage.damage).ToString(), damage.critical);
-            _entityStats.Color = _entityStats.StartingColor * UpdateColor();
-            sr.color = _entityStats.Color;
+            UpdateColor();
 
             UpdateHealthBar();
             CheckAlive();

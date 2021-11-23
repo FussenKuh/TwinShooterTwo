@@ -60,22 +60,20 @@ public class PlayerManager : Singleton<PlayerManager>
         if (playerInput.currentControlScheme == "Keyboard&Mouse")
         {
             string middleText =
-                "<size=70%>\n\n\n\n\n\n\n\n\n\n" +
                 "<color=yellow> Keyboard Controls </color>\n" +
                 "<color=green>Move & Look</color> - WSAD or Arrow Keys & Mouse\n" +
                 "<color=green>Shoot</color> - Left mouse button\n" +
-                "<color=green>Use</color> - Space</size>";
+                "<color=green>Use</color> - Space";
 
             StatsOverlay.Instance.UpdateMiddleText(middleText);
         }
         else
         {
             string middleText =
-                "<size=70%>\n\n\n\n\n\n\n\n\n\n" +
                 "<color=yellow>Gamepad Controls </color>\n" +
                 "<color=green>Move & Look</color> - Left and right sticks\n" +
                 "<color=green>Shoot</color> - Right trigger\n" +
-                "<color=green>Use</color> - A</size>";
+                "<color=green>Use</color> - A";
 
             StatsOverlay.Instance.UpdateMiddleText(middleText);
         }

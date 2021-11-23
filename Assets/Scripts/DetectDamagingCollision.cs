@@ -17,8 +17,14 @@ public class DetectDamagingCollision : MonoBehaviour
 
     List<Damageable> _damageables = new List<Damageable>();
 
+    [SerializeField]
+    bool _disabled = false;
+
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (_disabled) { return; }
+
         Damageable d = collision.collider.GetComponent<Damageable>();
         if (d != null)
         {
@@ -32,7 +38,9 @@ public class DetectDamagingCollision : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        Damageable d = collision.otherCollider.GetComponent<Damageable>();
+        if (_disabled) { return; }
+
+        Damageable d = collision.collider.GetComponent<Damageable>();
         if (d != null)
         {
             if (_damageables.Contains(d))

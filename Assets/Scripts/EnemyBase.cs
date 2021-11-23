@@ -83,7 +83,9 @@ public class EnemyBase : MonoBehaviour, IEntity
 
         _spriteRenderer.color = EntityInfo.StartingColor;
 
-        //EnemyManager.Instance.AddEnemy(this);
+        ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
+        var main = ps.main;
+        main.startColor = EntityInfo.StartingColor;
     }
 
 
@@ -95,10 +97,18 @@ public class EnemyBase : MonoBehaviour, IEntity
         if (_damageable != null) { _damageable.OnHit -= OnHit; }
     }
 
-    Color ColorTint()
+    void UpdateColor()
     {
-        float newTint = ((float)EntityInfo.Health / EntityInfo.StartingHealth).Remap(0f, 1f, 0.3f, 0.8f);
-        return new Color(newTint, newTint, newTint);
+        float newTint = ((float)_entityStats.Health / _entityStats.StartingHealth).Remap(0f, 1f, 0.3f, 0.8f);
+
+        Color tmp = _entityStats.StartingColor * newTint;
+        tmp.a = 1;
+        _entityStats.Color = tmp;
+        _spriteRenderer.color = _entityStats.Color;
+
+        ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
+        var main = ps.main;
+        main.startColor = _entityStats.Color;
     }
 
     void OnHit(WeaponData weaponData)
@@ -112,13 +122,11 @@ public class EnemyBase : MonoBehaviour, IEntity
         {
             if (damage.damage > EntityInfo.Health) { damage.damage = EntityInfo.Health; }
             GameManager.Instance.AddToTotalDamage((int)damage.damage);
-            GameManager.Instance.DamageToClearLevel -= damage.damage;
-
-            Messenger<float>.Broadcast("EnemyDamage", damage.damage);
+            Messenger<float>.Broadcast("EnemyDamage", (int)damage.damage);
 
             EntityInfo.Health -= damage.damage;
 
-            _spriteRenderer.color = EntityInfo.StartingColor * ColorTint();
+            UpdateColor();
 
             if (EntityInfo.Health <= 0)
             {
@@ -160,6 +168,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         }
         else
         {
+            Debug.LogFormat("(maybe) {0} is stopping the attack on {1}", name, contactInfo.entity.name);
             if (attacking != null)
             {
                 Debug.LogFormat("{0} is stopping the attack on {1}", name, contactInfo.entity.name);

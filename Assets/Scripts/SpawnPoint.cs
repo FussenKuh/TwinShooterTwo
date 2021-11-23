@@ -18,8 +18,19 @@ public class SpawnPoint : MonoBehaviour
 
     DetectTarget _detectTarget;
 
+
+    [SerializeField]
+    ParticleSystem _spawnParticles;
+    ParticleSystem.EmissionModule _emissionSystem;
+    float _emissionRate;
+
     void Initialize()
     {
+        _spawnParticles = GetComponentInChildren<ParticleSystem>();
+        _emissionSystem = _spawnParticles.emission;
+        _emissionRate = _emissionSystem.rateOverTimeMultiplier;
+        _emissionSystem.rateOverTimeMultiplier = 0;
+        
         _detectTarget = GetComponentInChildren<DetectTarget>();
         _detectTarget.OnDetectTarget += OnDetectTarget;
 
@@ -51,6 +62,10 @@ public class SpawnPoint : MonoBehaviour
         {
             // Target is in our zone. Start spawning
             _targetDetected = true;
+
+            _emissionSystem.rateOverTimeMultiplier = _emissionRate;
+
+            //if (_spawnParticles.is)
         }
     }
 

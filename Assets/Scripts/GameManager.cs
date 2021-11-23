@@ -55,14 +55,12 @@ public class GameManager : Singleton<GameManager>
     public void LevelLoaded(WorldSpawner level)
     {
 
-        string upperLeftText = "<size=70%>---Current---\nLevel <color=yellow>"
-            + Instance.currentScore.ToString("D5")
+        string upperLeftText = "Level <color=yellow>"
+            + Instance.currentScore.ToString()
             + "</color>\nDamage <color=yellow>"
-            + Instance.currentDamage.ToString("D5") + "</color></size>";
+            + Instance.DamageToClearLevel.ToString() + "</color>";
 
         StatsOverlay.Instance.UpdateUpperLeftText(upperLeftText);
-        StatsOverlay.Instance.UpdateBottomText("");
-        StatsOverlay.Instance.UpdateUpperRightText("");
         StatsOverlay.Instance.UpdateMiddleText("");
 
         Instance.AddToTotalDamage(0);
@@ -122,11 +120,12 @@ public class GameManager : Singleton<GameManager>
     public void AddToTotalDamage(int dmg)
     {
         currentDamage += dmg;
+        DamageToClearLevel -= dmg;
 
-        string upperLeftText = "<size=70%>---Current---\nLevel <color=yellow>"
-            + Instance.currentScore.ToString("D5")
-            + "</color>\nDamage <color=yellow>"
-            + Instance.currentDamage.ToString("D5") + "</color></size>";
+        string upperLeftText = "Level <color=yellow>"
+            + Instance.currentScore.ToString()
+            + "</color>\nDamage Needed <color=yellow>"
+            + Instance.DamageToClearLevel.ToString() + "</color>";
 
         StatsOverlay.Instance.UpdateUpperLeftText(upperLeftText);
 //        Debug.Log("Total Dmg: " + currentDamage);

@@ -53,12 +53,12 @@ public class StatsOverlay : MonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
-        upperRightText = transform.Find("Text - Upper Right").GetComponent<TextMeshProUGUI>();
-        upperLeftText = transform.Find("Text - Upper Left").GetComponent<TextMeshProUGUI>();
-        middleText = transform.Find("Text - Middle").GetComponent<TextMeshProUGUI>();
-        bottomText = transform.Find("Text - Bottom").GetComponent<TextMeshProUGUI>();
+        //upperRightText = transform.Find("Text - Upper Right").GetComponent<TextMeshProUGUI>();
+        //upperLeftText = transform.Find("Text - Upper Left").GetComponent<TextMeshProUGUI>();
+        //middleText = transform.Find("Text - Middle").GetComponent<TextMeshProUGUI>();
+        //bottomText = transform.Find("Text - Bottom").GetComponent<TextMeshProUGUI>();
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
 }
