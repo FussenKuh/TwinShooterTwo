@@ -30,16 +30,6 @@ public class TitleScreen : MonoBehaviour
     {
         string bottomText = "Press <color=yellow>-space bar-</color> or <color=yellow>-a-</color> on your gamepad to join<size=80%>";
         string middleText = "";
-            //"\n\n\n\n" +
-            //"<size=70%><color=yellow> Keyboard Controls </color>\n" +
-            //"Move & Look - WSAD or Arrow Keys & Mouse\n" +
-            //"Shoot - Left mouse button\n" +
-            //"Use - Space Bar\n" +
-            //"\n" +
-            //"<color=yellow> Gamepad Controls </color>\n" +
-            //"Move & Look - Left and right sticks\n" +
-            //"Shoot - Right trigger" +
-            //"Use - A</size>";
         string upperRightText =
             "<size=80%> The world is gray...You're a <color=orange>glitch</color>, a <color=red>bug</color>.\n" +
             "You're <color=blue>colorful</color> and it scares them. <color=yellow>you</color>...</size>\n" +

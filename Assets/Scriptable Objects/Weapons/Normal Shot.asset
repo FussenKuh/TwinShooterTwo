@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eee8d7044b60e584aae41ae2a9b69eae, type: 3}
   m_Name: Normal Shot
   m_EditorClassIdentifier: 
+  weaponType: 1
   weaponName: Normal Shot
   projectilePrefab: {fileID: 167802443801076781, guid: 1b70e5b3d629ea14caefe7aa8c471667, type: 3}
   speed: 15
@@ -20,3 +21,7 @@ MonoBehaviour:
   fireRate: 0.2
   damageMin: 4
   damageMax: 7
+  damageRadius: 0
+  energyUsedPerShot: 2
+  criticalChance: 20
+  criticalMultiplier: 0.3

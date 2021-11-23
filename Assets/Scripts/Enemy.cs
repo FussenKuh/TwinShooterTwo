@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using TMPro;
+using Pathfinding;
 
 public class Enemy : MonoBehaviour
 {
+    public bool targetDummy = false;
+
+    public bool takesDamage = true;
+    public bool givesDamage = true;
+
     public bool EnableDebugText = false;
     public TextMeshPro debugText;
     [SerializeField]
@@ -24,10 +30,16 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     float timeSinceLastAttack = 0;
 
+    [SerializeField]
+    AIPath aip;
+    [SerializeField]
+    AIDestinationSetter aid;
+
     public EnemyStats.StatData EnemyStats { get { return _enemyStats; } }
 
     void AmIStuck()
     {
+        if (targetDummy) { return; }
         if (elapsedTime > idleDurration)
         {
             if (Vector3.Distance(startLocation, transform.position) >= distanceThreshold)
@@ -80,8 +92,17 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Let the manager know that we exist
-        EnemyManager.Instance.AddEnemy(this);
+        if (targetDummy)
+        {
+            givesDamage = false;
+            takesDamage = false;
+        }
+
+        if (!targetDummy)
+        {
+            // Let the manager know that we exist
+            //EnemyManager.Instance.AddEnemy(this);
+        }
 
         origColor = gameObject.GetComponent<SpriteRenderer>().color;
         rb = gameObject.GetComponent<Rigidbody2D>();
@@ -96,6 +117,7 @@ public class Enemy : MonoBehaviour
         }
 
         _baseEntityMoveToGoal.MaxMovementSpeed *= (Random.Range(1f, 2f));
+        aip.maxSpeed = _baseEntityMoveToGoal.MaxMovementSpeed;
 
         StartCoroutine(Attack());
     }
@@ -105,6 +127,8 @@ public class Enemy : MonoBehaviour
 
     bool TooFarAway()
     {
+        if (targetDummy) { return false; }
+
         bool retVal = false;
 
         List<Player> nearMe = activePlayers.Where(p => Vector3.Distance(p.transform.position, gameObject.transform.position) <= (detectionDistance * 2))
@@ -140,7 +164,7 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        List<Player> nearMe = activePlayers.Where(p => Vector3.Distance(p.transform.position, gameObject.transform.position) <= detectionDistance).Where(p => p.PlayerStats.Alive)
+        List<Player> nearMe = activePlayers.Where(p => Vector3.Distance(p.transform.position, gameObject.transform.position) <= detectionDistance).Where(p => p.EntityInfo.Alive)
             .OrderByDescending(p => Vector3.Distance(p.transform.position, gameObject.transform.position)).ToList();
 
         if (nearMe.Count > 0)
@@ -149,8 +173,13 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            goal = null;
-            _baseEntityMoveToGoal.CancelMovement();
+            //goal = null;
+            ////CJK _baseEntityMoveToGoal.CancelMovement();
+
+            //aid.target = null;
+            //aip.canSearch = false;
+            //aip.SetPath(null);
+
 //            Debug.Log(name + " Lost track of player");
 
             //if (Vector3.Distance(searchGoal, transform.position) > 10 || Vector3.Distance(searchGoal, transform.position) <= 1)
@@ -163,7 +192,10 @@ public class Enemy : MonoBehaviour
 
         if (goal != null)
         {
-            _baseEntityMoveToGoal.MoveToGoal(goal.position);
+            aid.target = goal;
+            aip.canSearch = true;
+
+            //_baseEntityMoveToGoal.MoveToGoal(goal.position);
             _turretRotationController.RotateToGoal(goal.position);
         }
     }
@@ -197,7 +229,10 @@ public class Enemy : MonoBehaviour
                 {
                     timeSinceLastAttack = 0;
                     elapsedTime = 0; // We're attacking something, so we're obviously not idle.
-                    attackThisPlayer.Hit(_enemyStats.Weapon);
+                    if (givesDamage)
+                    {
+//                        attackThisPlayer.Hit(_enemyStats.Weapon);
+                    }
                 }
                 
             }
@@ -243,21 +278,19 @@ public class Enemy : MonoBehaviour
 
     public void Hit(Collision2D collision, WeaponData weaponData)
     {
-        int damage = weaponData.Damage;
-        bool crit = FKS.Utils.UtilsClass.TestChance(30);
-        if (crit)
-        {
-            damage = Mathf.RoundToInt(damage * 1.5f);
-        }
+        int damage = (int)weaponData.Damage.damage;
 
         int tmpHealth = currentHealth;
 
-        MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), damage.ToString(), crit);
+        MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), damage.ToString(), weaponData.Damage.critical);
 
         if (damage > currentHealth) { damage = currentHealth; }
         GameManager.Instance.AddToTotalDamage(damage);
 
-        currentHealth -= damage;
+        if (takesDamage)
+        {
+            currentHealth -= damage;
+        }
 
         sr.color = origColor * UpdateColor();
 

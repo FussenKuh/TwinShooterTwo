@@ -6,6 +6,18 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New WeaponData", menuName = "Weapon Data", order = 1)]
 public class WeaponData : ScriptableObject, ISerializationCallbackReceiver
 {
+	public struct DamageType
+    {
+		public float damage;
+		public bool critical;
+    }
+
+	public enum WeaponType { Enemy, Player}
+
+	[Tooltip("The type of weapon")]
+	[SerializeField]
+	WeaponType weaponType = WeaponType.Enemy;
+
 	[Tooltip("The name of the weapon")]
 	[SerializeField]
 	string weaponName = "Unnamed";
@@ -42,6 +54,17 @@ public class WeaponData : ScriptableObject, ISerializationCallbackReceiver
 	[SerializeField]
 	float damageRadius = 0;
 
+	[Tooltip("Amount  of energy one shot of this weapon takes")]
+	[SerializeField]
+	float energyUsedPerShot = 1;
+
+	[SerializeField]
+	[Range(0, 100)]
+	float criticalChance = 5;
+	[SerializeField]
+	float criticalMultiplier = 0.2f;
+
+	public WeaponType Type { get { return weaponType; } }
 	public string Name { get { return weaponName; } }
 	public GameObject ProjectilePrefab { get { return projectilePrefab; } }
 	public float Speed { get { return speed; } }
@@ -51,7 +74,22 @@ public class WeaponData : ScriptableObject, ISerializationCallbackReceiver
 	public int DamageMin { get { return damageMin; } }
 	public int DamageMax { get { return damageMax; } }
 	public float DamageRadius { get { return damageRadius; } }
-	public int Damage { get { return UnityEngine.Random.Range(damageMin, damageMax + 1); } }
+	public DamageType Damage 
+	{ 
+		get 
+		{
+			bool crit = FKS.Utils.UtilsClass.TestChance((int)CriticalChance);
+			float damage = UnityEngine.Random.Range(damageMin, damageMax + 1);
+			if (crit)
+            {
+				damage *= (1 + CriticalMultiplier);
+            }
+			return new DamageType() { damage = damage, critical = crit }; 
+		} 
+	}
+	public float EnergyUsedPerShot { get { return energyUsedPerShot; } }
+	public float CriticalChance { get { return criticalChance; } }
+	public float CriticalMultiplier { get { return criticalMultiplier; } }
 
 
 	public void OnAfterDeserialize() { }

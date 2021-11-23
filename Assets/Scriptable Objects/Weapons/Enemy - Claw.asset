@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eee8d7044b60e584aae41ae2a9b69eae, type: 3}
   m_Name: Enemy - Claw
   m_EditorClassIdentifier: 
+  weaponType: 0
   weaponName: Claw
   projectilePrefab: {fileID: 0}
   speed: 0
@@ -21,3 +22,6 @@ MonoBehaviour:
   damageMin: 1
   damageMax: 4
   damageRadius: 0
+  energyUsedPerShot: 0
+  criticalChance: 8
+  criticalMultiplier: 0.2

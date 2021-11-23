@@ -30,19 +30,16 @@ public class EffectsManager : Singleton<EffectsManager>
         
     }
 
-    public void BulletHit(Collision2D c)
+    public void BulletHit(DetectDamagingCollision.DamageInfo c)
     {
-        bulletHit.transform.position = c.contacts[0].point;
-        bulletHit.transform.rotation = Quaternion.Euler(c.contacts[0].normal);
+        bulletHit.transform.position = c.location;
+        bulletHit.transform.rotation = Quaternion.Euler(c.normal);
 
         var main = bulletHit.main;
         ParticleSystem.MinMaxGradient tmpColor = bulletHit.main.startColor;
-        //tmpColor.colorMin = c.otherCollider.GetComponent<SpriteRenderer>().color;
-        //tmpColor.colorMax = c.otherCollider.GetComponent<SpriteRenderer>().color;
-        //main.startColor = tmpColor;
-        //bulletHit.Emit(1);
-        tmpColor.colorMin = c.collider.GetComponent<SpriteRenderer>().color;
-        tmpColor.colorMax = c.collider.GetComponent<SpriteRenderer>().color;
+
+        tmpColor.colorMin = c.entity.GetComponent<SpriteRenderer>().color;
+        tmpColor.colorMax = c.entity.GetComponent<SpriteRenderer>().color;
         main.startColor = tmpColor;
         bulletHit.Emit(Random.Range(3, 6));
 

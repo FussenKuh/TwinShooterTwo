@@ -6,16 +6,13 @@ public class EnemyManager : Singleton<EnemyManager>
 {
 
     [SerializeField]
-    List<Enemy> enemies = new List<Enemy>();
+    List<EnemyBase> enemies = new List<EnemyBase>();
 
     [SerializeField]
     WorldSpawner level;
 
-    [SerializeField]
-    Enemy enemyPrefab;
-
-    [SerializeField]
-    float spawnDelay = 0.5f;
+    //[SerializeField]
+    //Enemy enemyPrefab;
 
     [SerializeField]
     CameraSystem cameraSystem;
@@ -23,7 +20,7 @@ public class EnemyManager : Singleton<EnemyManager>
     [SerializeField]
     int maxNumberOfEnemies = 1;
 
-    Dictionary<string, Enemy> enemyPrefabs = new Dictionary<string, Enemy>();
+    Dictionary<string, EnemyBase> enemyPrefabs = new Dictionary<string, EnemyBase>();
 
     public void Initialize()
     {
@@ -34,12 +31,15 @@ public class EnemyManager : Singleton<EnemyManager>
         Debug.Log("Loaded " + prefabs.Length + " Enemy prefabs");
         foreach (GameObject g in prefabs)
         {
-            Debug.Log(g.name + " Loaded");
-            enemyPrefabs.Add(g.name, g.GetComponent<Enemy>());
+            if (g.GetComponent<EnemyBase>() != null)
+            {
+                Debug.Log(g.name + " Loaded");
+                enemyPrefabs.Add(g.name, g.GetComponent<EnemyBase>());
+            }
         }
 
-        GameObject tmp = Resources.Load("Prefabs/Enemies/Enemy") as GameObject;
-        enemyPrefab = tmp.GetComponent<Enemy>();
+        //GameObject tmp = Resources.Load("Prefabs/Enemies/Enemy") as GameObject;
+        //enemyPrefab = tmp.GetComponent<Enemy>();
 
         cameraSystem = GameObject.Find("Main Camera System").GetComponent<CameraSystem>();
 
@@ -67,7 +67,7 @@ public class EnemyManager : Singleton<EnemyManager>
 
     void OnExitedStartZone(Player player)
     {
-        CurrentSpawner = RandomSpawn;
+//        CurrentSpawner = SpawnALot;
     }
 
     void OnWorldSpawned(WorldSpawner w)
@@ -96,43 +96,78 @@ public class EnemyManager : Singleton<EnemyManager>
     [SerializeField]
     float spawnDist = 10;
 
-    float FastEnemySpawn()
+    //float FastEnemySpawn()
+    //{
+    //    if (enemies.Count < maxNumberOfEnemies)
+    //    {
+    //        Vector3 desiredPos = RandomPointOnXYCircle(PlayerManager.Instance.AveragePlayersLocation, spawnDist);
+    //        GridObject go = level.grid.GetGridObject(desiredPos);
+
+    //        int tries = 0;
+    //        while (go == null && tries < 5000)
+    //        {
+    //            tries++;
+    //            desiredPos = RandomPointOnXYCircle(PlayerManager.Instance.AveragePlayersLocation, spawnDist);
+    //            go = level.grid.GetGridObject(desiredPos);
+    //        }
+
+    //        if (go != null)
+    //        {
+    //            desiredPos = level.grid.GetWorldCenterPosition(desiredPos);
+    //            if (level.grid.GetGridObject(desiredPos).Walkable)
+    //            {
+    //                AddEnemySpawner("Enemy - Fast (New)", desiredPos, 1, 0.1f, 1f); // Enemy - Fast
+    //                CurrentSpawner = RandomSpawn;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            // We've randomly chosen a place outside of the level boundary. Don't do anything
+    //            //Debug.LogError("No grid object defined at " + desiredPos);
+    //        }
+    //    }
+
+    //    float retVal = 0.75f;
+    //    return retVal;
+    //}
+
+
+    int _spawnAlotCounter = 0;
+
+    float SpawnALot()
     {
-        if (enemies.Count < maxNumberOfEnemies)
+        float retVal = 0f;
+
+        if (_spawnAlotCounter < 6)
         {
-            Vector3 desiredPos = RandomPointOnXYCircle(PlayerManager.Instance.AveragePlayersLocation, spawnDist);
-            GridObject go = level.grid.GetGridObject(desiredPos);
 
-            int tries = 0;
-            while (go == null && tries < 5000)
+            if (FKS.Utils.UtilsClass.TestChance(15))
             {
-                tries++;
-                desiredPos = RandomPointOnXYCircle(PlayerManager.Instance.AveragePlayersLocation, spawnDist);
-                go = level.grid.GetGridObject(desiredPos);
-            }
-
-            if (go != null)
-            {
-                desiredPos = level.grid.GetWorldCenterPosition(desiredPos);
-                if (level.grid.GetGridObject(desiredPos).Walkable)
-                {
-                    AddEnemySpawner("Enemy - Fast", desiredPos, 1, 0.1f, 1f);
-                    CurrentSpawner = RandomSpawn;
-                }
+                RandomSpawn("Enemy - Fast (New)", 1);
             }
             else
             {
-                // We've randomly chosen a place outside of the level boundary. Don't do anything
-                //Debug.LogError("No grid object defined at " + desiredPos);
+                RandomSpawn("Enemy - Normal (New)", Random.Range(2,6));
             }
+
+            retVal = 0.1f;
+        }
+        else
+        {
+            _spawnAlotCounter = 0;
+            retVal = 15f;
         }
 
-        float retVal = 0.75f;
+        _spawnAlotCounter++;
+
+        //Debug.LogFormat("SpawnALot: count={0} delay={1}", _spawnAlotCounter, retVal );
+
         return retVal;
+
     }
 
 
-    float RandomSpawn()
+    void RandomSpawn(string enemyType, int numberOfEnemies)
     {
         if (enemies.Count < maxNumberOfEnemies)
         {
@@ -172,15 +207,14 @@ public class EnemyManager : Singleton<EnemyManager>
             if (availableSpots.Count > 0)
             {
                 //Debug.Log("Found " + availableSpots.Count + " locations");
-                desiredPos = level.grid.GetWorldCenterPosition(availableSpots[Random.Range(0, availableSpots.Count - 1)].X, availableSpots[Random.Range(0, availableSpots.Count - 1)].Y);
+                int index = Random.Range(0, availableSpots.Count);
+                desiredPos = level.grid.GetWorldCenterPosition(availableSpots[index].X, availableSpots[index].Y);
             }
             else
             {
                 Debug.LogWarning("Didn't find any available spots on the grid. What's up with that?");
             }
 
-
-            
             GridObject go = level.grid.GetGridObject(desiredPos);
 
             int tries = 0;
@@ -191,15 +225,13 @@ public class EnemyManager : Singleton<EnemyManager>
                 go = level.grid.GetGridObject(desiredPos);
             }
 
-            
-
             if (go != null)
             {
                 desiredPos = level.grid.GetWorldCenterPosition(desiredPos);
                 if (level.grid.GetGridObject(desiredPos).Walkable)
                 {
-                    int numOfEnemies = Random.Range(2, 5);
-                    AddEnemySpawner("Enemy", desiredPos, numOfEnemies, 0.1f, 1f);
+                    //int numOfEnemies = Random.Range(2, 5);
+                    AddEnemySpawner(enemyType, desiredPos, numberOfEnemies, 0.1f, 1f);
                 }
             }
             else
@@ -208,9 +240,6 @@ public class EnemyManager : Singleton<EnemyManager>
                 Debug.LogError("No grid object defined at " + desiredPos);
             }
         }
-
-        float retVal = 0.75f;
-        return retVal;
     }
 
     delegate float SpawnerType();
@@ -223,10 +252,10 @@ public class EnemyManager : Singleton<EnemyManager>
         {
             yield return new WaitForSeconds(CurrentSpawner());
 
-            if (FKS.Utils.UtilsClass.TestChance(10) && CurrentSpawner != NoSpawn)
-            {
-                CurrentSpawner = FastEnemySpawn;
-            }
+            //if (FKS.Utils.UtilsClass.TestChance(10) && CurrentSpawner != NoSpawn)
+            //{
+            //    CurrentSpawner = SpawnALot; //FastEnemySpawn;
+            //}
         }
     }
 
@@ -238,7 +267,7 @@ public class EnemyManager : Singleton<EnemyManager>
     }
 
 
-    public void AddEnemy(Enemy newEnemy)
+    public void AddEnemy(EnemyBase newEnemy)
     {
         enemies.Add(newEnemy);
         newEnemy.transform.parent = transform;
@@ -247,10 +276,10 @@ public class EnemyManager : Singleton<EnemyManager>
     public void AddEnemySpawner(string prefabID, Vector3 desiredPos, int count, float spawnRate, float spawnDelay)
     {
 
-        Enemy prefab = null;
+        EnemyBase prefab = null;
         if (enemyPrefabs.TryGetValue(prefabID, out prefab))
         {
-            EntitySpawner.Create(desiredPos, count, spawnRate, spawnDelay, prefab.gameObject, prefab.GetComponent<SpriteRenderer>().color);
+            EntitySpawner.Create(desiredPos, count, spawnRate, spawnDelay, prefab.gameObject, prefab.gameObject.GetComponent<SpriteRenderer>().color);
         }
         else
         {

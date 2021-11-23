@@ -357,27 +357,32 @@ public class WorldSpawner : MonoBehaviour
         while (objectPercentActual < objectPercentDesired && objectSpawnAttempts <= 1000)
         {
             GameObject tmp;
-            SpriteRenderer sr;
-            BoxCollider2D bc;
+            //SpriteRenderer sr;
+            //BoxCollider2D bc;
             ContactFilter2D filter = new ContactFilter2D();
             filter.NoFilter();
 
-            filter.SetLayerMask(LayerMask.GetMask("Default"));
+//            filter.SetLayerMask(LayerMask.GetMask("Default"));
+            filter.SetLayerMask(LayerMask.GetMask("NavigationItems"));
 
             // Generate a *potential* object
             tmp = GameObject.Instantiate(objPrefab);
             //tmp.transform.localScale = new Vector2(Random.Range(minObjectSize, maxObjectSize), Random.Range(minObjectSize, maxObjectSize));
 
-            sr = tmp.GetComponent<SpriteRenderer>();
-            sr.size = new Vector2(Random.Range(minObjectSize, maxObjectSize), Random.Range(minObjectSize, maxObjectSize));
+            WorldObjectSize wo = tmp.GetComponent<WorldObjectSize>();
+            Vector2 woSize = new Vector2(Random.Range(minObjectSize, maxObjectSize), Random.Range(minObjectSize, maxObjectSize));
+            wo.UpdateObject(WorldObjectData.ObjectType.WALL, woSize);
 
-            bc = tmp.GetComponent<BoxCollider2D>();
-            bc.size = sr.size;
+            //sr = tmp.GetComponent<SpriteRenderer>();
+            //sr.size = new Vector2(Random.Range(minObjectSize, maxObjectSize), Random.Range(minObjectSize, maxObjectSize));
+
+            //bc = tmp.GetComponent<BoxCollider2D>();
+            //bc.size = sr.size;
 
             Vector3 pos = new Vector3((int)Random.Range(-worldDims.width / 2, worldDims.width / 2), (int)Random.Range(-worldDims.height / 2, worldDims.height / 2), 0);
-            if ((/*tmp.transform.localScale.x*/ sr.size.x % 2 == 0 && worldDims.width % 2 != 0) || (/*tmp.transform.localScale.x*/ sr.size.x % 2 != 0 && worldDims.width % 2 == 0))
+            if ((/*tmp.transform.localScale.x*/ wo.Size.x % 2 == 0 && worldDims.width % 2 != 0) || (/*tmp.transform.localScale.x*/ wo.Size.x % 2 != 0 && worldDims.width % 2 == 0))
             {
-                if (pos.x + 0.5f + (/*tmp.transform.localScale.x*/ sr.size.x / 2) <= origin.x + (worldDims.x / 2))
+                if (pos.x + 0.5f + (/*tmp.transform.localScale.x*/ wo.Size.x / 2) <= origin.x + (worldDims.x / 2))
                 {
                     pos.x += 0.5f;
                 }
@@ -386,9 +391,9 @@ public class WorldSpawner : MonoBehaviour
                     pos.x -= 0.5f;
                 }
             }
-            if ((/*tmp.transform.localScale.y*/ sr.size.y % 2 == 0 && worldDims.height % 2 != 0) || (/*tmp.transform.localScale.y*/ sr.size.y % 2 != 0 && worldDims.height % 2 == 0))
+            if ((/*tmp.transform.localScale.y*/ wo.Size.y % 2 == 0 && worldDims.height % 2 != 0) || (/*tmp.transform.localScale.y*/ wo.Size.y % 2 != 0 && worldDims.height % 2 == 0))
             {
-                if (pos.y + 0.5f + (/*tmp.transform.localScale.y*/ sr.size.y / 2) <= origin.y + (worldDims.y / 2))
+                if (pos.y + 0.5f + (/*tmp.transform.localScale.y*/ wo.Size.y / 2) <= origin.y + (worldDims.y / 2))
                 {
                     pos.y += 0.5f;
                 }
@@ -423,19 +428,18 @@ public class WorldSpawner : MonoBehaviour
                 nameIndex++;
                 tmp.transform.parent = worldContainer;
                 tmp.name = "Object " + nameIndex.ToString("D3");
-                //sr = tmp.GetComponent<SpriteRenderer>();
 
                 if (randomObjectColors)
                 {
-                    sr.color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+                    wo.Color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
                 }
                 else
                 {
                     int index = Random.Range(0, objectColors.Count);
-                    sr.color = objectColors[index];
+                    wo.Color = objectColors[index];
                 }
 
-                objectArea += sr.size.x * sr.size.y; /*(tmp.transform.localScale.x * tmp.transform.localScale.y);*/
+                objectArea += wo.Size.x * wo.Size.y; /*(tmp.transform.localScale.x * tmp.transform.localScale.y);*/
                 objectPercentActual = objectArea / worldArea;
             }
             yield return new WaitForFixedUpdate();
@@ -521,7 +525,7 @@ public class WorldSpawner : MonoBehaviour
             for (int w = 0; w < grid.GetWidth(); w++)
             {
 
-                if (Physics2D.OverlapBox(grid.GetWorldCenterPosition(w, h), new Vector2(0.4f, 0.4f), 0, LayerMask.GetMask("Default")) == null)
+                if (Physics2D.OverlapBox(grid.GetWorldCenterPosition(w, h), new Vector2(0.4f, 0.4f), 0, LayerMask.GetMask("NavigationItems")) == null)
                 {
                     //Debug.Log(grid.GetWorldCenterPosition(w, h) + " -- Nothing Hit");
                     // No Object at this position. Mark the grid as 'true' for passible 
@@ -640,6 +644,9 @@ public class WorldSpawner : MonoBehaviour
 
         ConfigureGrid();
 
+
+        
+
         Time.timeScale = 1;
 
         LevelReadyArgs retVal = new LevelReadyArgs();
@@ -647,11 +654,38 @@ public class WorldSpawner : MonoBehaviour
         retVal.SpawnTime = Time.unscaledTime - startTime;
         retVal.Error = false;
         retVal.ErrorMessage = "";
+
+        ConfigureNavGrid.SetDimensions(retVal.World.worldWidth, retVal.World.worldHeight, 0.5f);
+        ConfigureNavGrid.SetCenter(retVal.World.Center);
+        PickRandomSpots();
+
         OnLevelReadyEvent?.Invoke(this, retVal);
         Debug.Log("Level Ready: " + retVal.SpawnTime.ToString("N2") + "s");
         spawning = false;
     }
 
+
+    public GameObject spawnPointPrefab;
+
+    void PickRandomSpots()
+    {
+        int count = Mathf.CeilToInt(worldArea / 150f); // We want a spawn point for every 150sq/units in our level 
+
+        Vector3 desiredPos = Vector3.zero;
+
+        for (int i = 0; i<count; i++)
+        {
+            do
+            {
+                desiredPos = new Vector3(Random.Range(5, worldWidth-5), Random.Range(5, worldHeight-5), 0);
+                desiredPos = ConfigureNavGrid.NearestWalkablePosition(desiredPos);
+            } while (Vector3.Distance(desiredPos, StartPoint.transform.position) < 15 || Vector3.Distance(desiredPos, GoalPoint.transform.position) < 15 || desiredPos == Vector3.zero);
+
+            GameObject tmp = GameObject.Instantiate(spawnPointPrefab, desiredPos, Quaternion.identity);
+            tmp.name = "Spawn Point " + i.ToString("D3");
+            tmp.transform.parent = transform;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()

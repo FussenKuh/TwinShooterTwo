@@ -120,6 +120,14 @@ public class PlayerManager : Singleton<PlayerManager>
         }
     }
 
+    public void ResetPlayers()
+    {
+        foreach (var p in players)
+        {
+            p.ResetPlayer();
+        }
+    }
+
     public void SetPlayerJoin(bool canJoin)
     {
         if (canJoin && players.Count < maxPlayers)

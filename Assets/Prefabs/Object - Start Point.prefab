@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 739141670904619874}
   - component: {fileID: 739141670904619873}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object - Goal Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 7874219716303375580}
   - component: {fileID: 3046871514276226409}
   - component: {fileID: 5670203576919896226}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -270,7 +270,9 @@ GameObject:
   - component: {fileID: 7076548793987406324}
   - component: {fileID: 4385474695883038834}
   - component: {fileID: 2936334509761414153}
-  m_Layer: 0
+  - component: {fileID: 2693702042411650377}
+  - component: {fileID: -883694885183443854}
+  m_Layer: 6
   m_Name: Object - Start Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -395,6 +397,34 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &2693702042411650377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076548793987406323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dac4766e27ab3ec4dbc89ba4afcd5b4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data:
+    Type: 0
+    Friction: 1
+--- !u!114 &-883694885183443854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076548793987406323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f027e2cf50b0d9042aff3e49fd820b25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _worldObjectID: {fileID: 0}
 --- !u!1 &7720823781319001807
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,7 +436,7 @@ GameObject:
   - component: {fileID: 528836570197957280}
   - component: {fileID: 4792337284434699775}
   - component: {fileID: 4287607253909184094}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

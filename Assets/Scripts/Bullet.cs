@@ -2,11 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(DetectDamagingCollision))]
 public class Bullet : MonoBehaviour
 {
     SpriteRenderer sr;
+    DetectDamagingCollision _detectDamagingCollision;
 
     public GameObject explosionPrefab;
+
+    [SerializeField]
+    bool _debug = false;
 
     public WeaponData Weapon { get; set; }
 
@@ -24,43 +29,52 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        EffectsManager.Instance.BulletHit(collision);
-
-
-        if (Weapon.DamageRadius > 0)
-        {
-            //GameObject explosion = GameObject.Instantiate(explosionPrefab, collision.contacts[0].point, Quaternion.identity);
-            //explosion.transform.localScale = new Vector3(Weapon.DamageRadius, Weapon.DamageRadius, 1);
-            //Destroy(explosion, 1);
-            var hits = Physics2D.OverlapCircleAll(collision.contacts[0].point, Weapon.DamageRadius);
-            Enemy tmp = null;
-            foreach (var hit in hits)
-            {
-                tmp = null;
-                tmp = hit.GetComponent<Enemy>();
-                if (tmp != null /*&& tmp != collision.gameObject.GetComponent<Enemy>()*/)
-                {
-                    tmp.Hit(collision, Weapon);
-                }
-            }
-
-        }
-        else
-        {
-            if (collision.gameObject.GetComponent<Enemy>() != null)
-            {
-                collision.gameObject.GetComponent<Enemy>().Hit(collision, Weapon);
-            }
-        }
-
-        Destroy(gameObject);
-    }
-
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
+
+        _detectDamagingCollision = GetComponent<DetectDamagingCollision>();
+        _detectDamagingCollision.OnDamagingCollision += OnDamagingCollision;
+    }
+
+    private void OnDestroy()
+    {
+        _detectDamagingCollision.OnDamagingCollision -= OnDamagingCollision;
+    }
+
+    void OnDamagingCollision(bool colliding, DetectDamagingCollision.DamageInfo contactInfo)
+    {
+        if (colliding)
+        {
+            EffectsManager.Instance.BulletHit(contactInfo);
+
+            if (Weapon.DamageRadius > 0)
+            {
+                var hits = Physics2D.OverlapCircleAll(contactInfo.location, Weapon.DamageRadius);
+
+                Damageable tmp = null;
+                foreach (var hit in hits)
+                {
+                    if (hit.isTrigger) { continue; } // Ignore trigger colliders. You can't 'damage' a trigger
+
+                    tmp = null;
+                    tmp = hit.GetComponent<Damageable>();
+                    if (tmp != null)
+                    {
+                        if (_debug) { Debug.Log(name + " Bullet Hit Splash Damageable Entity (" + tmp.name + ")"); }
+                        tmp.Hit(Weapon);
+                    }
+                }
+            }
+            else
+            {
+                if (_debug) { Debug.Log(name + " Bullet Hit Damageable Entity (" + contactInfo.entity.name + ")"); }
+
+                contactInfo.entity.Hit(Weapon);
+            }
+
+            Destroy(gameObject);
+        }
     }
 
     // Update is called once per frame
