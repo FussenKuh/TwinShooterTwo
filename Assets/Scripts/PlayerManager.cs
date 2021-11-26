@@ -61,9 +61,13 @@ public class PlayerManager : Singleton<PlayerManager>
         {
             string middleText =
                 "<color=yellow> Keyboard Controls </color>\n" +
-                "<color=green>Move & Look</color> - WSAD or Arrow Keys & Mouse\n" +
-                "<color=green>Shoot</color> - Left mouse button\n" +
-                "<color=green>Use</color> - Space";
+                "WSAD or Arrow Keys & Mouse <color=green>Move & Look</color>\n" +
+                "Left mouse button <color=green>Shoot</color>\n" +
+                "Space <color=green>Use</color>";
+            //"<color=yellow> Keyboard Controls </color>\n" +
+            //"<color=green>Move & Look</color> - WSAD or Arrow Keys & Mouse\n" +
+            //"<color=green>Shoot</color> - Left mouse button\n" +
+            //"<color=green>Use</color> - Space";
 
             StatsOverlay.Instance.UpdateMiddleText(middleText);
         }
@@ -71,9 +75,13 @@ public class PlayerManager : Singleton<PlayerManager>
         {
             string middleText =
                 "<color=yellow>Gamepad Controls </color>\n" +
-                "<color=green>Move & Look</color> - Left and right sticks\n" +
-                "<color=green>Shoot</color> - Right trigger\n" +
-                "<color=green>Use</color> - A";
+                "Left and right sticks <color=green>Move & Look</color>\n" +
+                "Right trigger <color=green>Shoot</color>\n" +
+                "A <color=green>Use</color>";
+                //"<color=yellow>Gamepad Controls </color>\n" +
+                //"<color=green>Move & Look</color> - Left and right sticks\n" +
+                //"<color=green>Shoot</color> - Right trigger\n" +
+                //"<color=green>Use</color> - A";
 
             StatsOverlay.Instance.UpdateMiddleText(middleText);
         }

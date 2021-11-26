@@ -25,6 +25,11 @@ public class CameraSystem : MonoBehaviour
     [SerializeField]
     Vector2 screenSize = Vector2.zero;
 
+    [SerializeField]
+    Vector3 _initialCameraBoundsPosition = new Vector3(0,29.5f,0);
+    [SerializeField]
+    Vector3 _initialCameraBoundsScale = new Vector3(45, 87, 1);
+
     public Bounds CalculatedBounds { get { return _camera.OrthographicBounds(); } }
 
     //public Vector3 CameraBounds
@@ -89,7 +94,8 @@ public class CameraSystem : MonoBehaviour
 
     public void Reset()
     {
-        SetCameraBounds(new Vector3(0, 6, 0), new Vector2(45, 40));
+        //SetCameraBounds(new Vector3(0, 6, 0), new Vector2(45, 40));
+        SetCameraBounds(_initialCameraBoundsPosition, new Vector2(_initialCameraBoundsScale.x, _initialCameraBoundsScale.y));
         _virtualCamera.transform.position = new Vector3(0, 0, -10);
     }
 
@@ -101,6 +107,9 @@ public class CameraSystem : MonoBehaviour
         _targetGroup = GetComponentInChildren<Cinemachine.CinemachineTargetGroup>();
 
         _cameraBounds = gameObject.transform.Find("Camera Bounds");
+
+        _initialCameraBoundsPosition = _cameraBounds.transform.position;
+        _initialCameraBoundsScale = _cameraBounds.transform.localScale;
     }
 
     // Update is called once per frame

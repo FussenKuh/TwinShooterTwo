@@ -53,6 +53,9 @@ public class StatsOverlay : MonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
+        Canvas c = GetComponent<Canvas>();
+        c.worldCamera = Camera.main;
+
         //upperRightText = transform.Find("Text - Upper Right").GetComponent<TextMeshProUGUI>();
         //upperLeftText = transform.Find("Text - Upper Left").GetComponent<TextMeshProUGUI>();
         //middleText = transform.Find("Text - Middle").GetComponent<TextMeshProUGUI>();

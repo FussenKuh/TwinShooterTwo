@@ -87,7 +87,7 @@ public class SpawnPoint : MonoBehaviour
         {
             // 90% of the time, spawn some "normal" enemies
             prefabID = "Enemy - Normal (New)";
-            count = Random.Range(2, 6);
+            count = Random.Range(2, 4);
         }
 
         EnemyBase prefab = null;

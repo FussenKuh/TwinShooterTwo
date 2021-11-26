@@ -21,7 +21,7 @@ MonoBehaviour:
   fireRate: 1
   damageMin: 15
   damageMax: 20
-  damageRadius: 1
+  damageRadius: 1.1
   energyUsedPerShot: 10
   criticalChance: 50
   criticalMultiplier: 0.5

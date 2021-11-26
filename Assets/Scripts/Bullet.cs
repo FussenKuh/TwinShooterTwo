@@ -6,6 +6,8 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     SpriteRenderer sr;
+    TrailRenderer tr;
+
     DetectDamagingCollision _detectDamagingCollision;
 
     public GameObject explosionPrefab;
@@ -22,16 +24,19 @@ public class Bullet : MonoBehaviour
         get
         {
             return sr.color;
+            
         }
         set
         {
             sr.color = value;
+            tr.startColor = value;
         }
     }
 
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
+        tr = gameObject.GetComponentInChildren<TrailRenderer>();
 
         _detectDamagingCollision = GetComponent<DetectDamagingCollision>();
         _detectDamagingCollision.OnDamagingCollision += OnDamagingCollision;

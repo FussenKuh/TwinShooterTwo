@@ -27,7 +27,10 @@ public class Damageable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (_thingsThatCanDamageMe.Count == 0)
+        {
+            Debug.LogWarning(name + " has a Damageable Monobehaviour but has not set any things that can hurt it.");
+        }
     }
 
     // Update is called once per frame

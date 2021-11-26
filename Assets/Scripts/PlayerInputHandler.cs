@@ -181,6 +181,8 @@ public class PlayerInputHandler : MonoBehaviour
 
                     impulseSource.GenerateImpulse(_turret.right * impulseMult);
 
+                    FKS.AudioManager.PlayAudio("Shot");
+
                 }
             }
             else

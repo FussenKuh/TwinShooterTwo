@@ -41,7 +41,7 @@ public class EffectsManager : Singleton<EffectsManager>
         tmpColor.colorMin = c.entity.GetComponent<SpriteRenderer>().color;
         tmpColor.colorMax = c.entity.GetComponent<SpriteRenderer>().color;
         main.startColor = tmpColor;
-        bulletHit.Emit(Random.Range(3, 6));
+        bulletHit.Emit(Random.Range(6, 10));
 
     }
 

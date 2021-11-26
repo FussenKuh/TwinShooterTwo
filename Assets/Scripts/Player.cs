@@ -143,9 +143,15 @@ public class Player : MonoBehaviour, IEntity
             {
                 StatsOverlay.Instance.UpdateMiddleText
                     (
-                    "<color=green>g</color><color=blue>a</color><color=red>m</color><color=yellow>e</color> <color=orange>O</color><color=#7f00ff>v</color><color=#0083FF>e</color><color=#ff07ff>r</color>"
+                    "<color=#999999>g</color><color=#bbbbbb>a</color><color=#dddddd>m</color><color=#ffffff>e</color> <color=#ffffff>O</color><color=#dddddd>v</color><color=#bbbbbb>e</color><color=#999999>r</color>"
+                    //"<color=green>g</color><color=blue>a</color><color=red>m</color><color=yellow>e</color> <color=orange>O</color><color=#7f00ff>v</color><color=#0083FF>e</color><color=#ff07ff>r</color>"
                     );
             }
+            FKS.AudioManager.PlayAudio("Die");
+        }
+        else
+        {
+            FKS.AudioManager.PlayAudio("Hit");
         }
     }
 
@@ -187,11 +193,15 @@ public class Player : MonoBehaviour, IEntity
 
         if (_entityStats.Alive)
         {
+            Messenger.Broadcast("PlayerHit", MessengerMode.DONT_REQUIRE_LISTENER);
+
             WeaponData.DamageType damage = weaponData.Damage;
 
             _entityStats.Health -= damage.damage;
             MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), Mathf.CeilToInt(damage.damage).ToString(), damage.critical);
             UpdateColor();
+
+            if (_entityStats.Health <= (_entityStats.StartingHealth / 4)) { GameManager.Instance.ChangeMusicTempo(1.2f); }
 
             UpdateHealthBar();
             CheckAlive();

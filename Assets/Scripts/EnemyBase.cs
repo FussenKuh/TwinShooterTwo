@@ -130,9 +130,14 @@ public class EnemyBase : MonoBehaviour, IEntity
 
             if (EntityInfo.Health <= 0)
             {
+                FKS.AudioManager.PlayAudio("Die");
                 EffectsManager.Instance.EnemyDeath(transform.position, EntityInfo.StartingColor);
                 Destroy(gameObject);
                 //EnemyManager.Instance.Kill(gameObject);
+            }
+            else
+            {
+                FKS.AudioManager.PlayAudio("Hit");
             }
         }
     }
@@ -168,7 +173,6 @@ public class EnemyBase : MonoBehaviour, IEntity
         }
         else
         {
-            Debug.LogFormat("(maybe) {0} is stopping the attack on {1}", name, contactInfo.entity.name);
             if (attacking != null)
             {
                 Debug.LogFormat("{0} is stopping the attack on {1}", name, contactInfo.entity.name);

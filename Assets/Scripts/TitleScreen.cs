@@ -15,10 +15,18 @@ public class TitleScreen : MonoBehaviour
         PlayerManager.Instance.SetPlayerJoin(true);
 
         cs = GameObject.Find("Main Camera System").GetComponent<CameraSystem>();
-        cs.Reset();
+        //cs.Reset();
+        StartCoroutine(ResetCamera());
 
         UpdateStatsOverlay();
     }
+
+    IEnumerator ResetCamera()
+    {
+        yield return new WaitForSeconds(0.1f);
+        cs.Reset();
+    }
+
 
     // Update is called once per frame
     void Update()

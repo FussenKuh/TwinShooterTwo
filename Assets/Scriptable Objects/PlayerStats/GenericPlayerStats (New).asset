@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GenericPlayerStats (New)
   m_EditorClassIdentifier: 
   _name: The Unknown Player
-  _health: 30
+  _health: 50
   _speed: 5
   _color: {r: 0, g: 0, b: 1, a: 1}
   _energy: 30
