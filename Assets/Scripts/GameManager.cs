@@ -5,19 +5,15 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
+    public string uniqueName;
+    public int onlineGameID = 1000;
+
 
     public int highScore = 0;
     public int currentScore = 0;
 
     public int highDamage = 0;
     public int currentDamage = 0;
-
-    public enum GameStates { PAUSED, GAMEOVER, PLAYING, LOADING };
-
-    //static bool managerCreated = false;
-
-    [SerializeField]
-    GameStates gameState = GameStates.GAMEOVER;
 
     [SerializeField]
     WorldSpawner.WorldSettings levelSettings = new WorldSpawner.WorldSettings();
@@ -35,6 +31,8 @@ public class GameManager : Singleton<GameManager>
 
     public void Initialize()
     {
+        uniqueName = UniqueNameGenerator.GenerateString(4);
+
         cameraSystem = GameObject.Find("Main Camera System").GetComponent<CameraSystem>();
         PlayerManager.Instance.Initialize();
 
@@ -136,6 +134,11 @@ public class GameManager : Singleton<GameManager>
             if (currentScore > highScore)
             {
                 highScore = currentScore;
+                FKS.OnlineScoreBoard _onlineScoreBoard = GameObject.FindObjectOfType<FKS.OnlineScoreBoard>();
+                if (_onlineScoreBoard != null)
+                {
+                    _onlineScoreBoard.PostScore(new FKS.Score() { name = Instance.uniqueName, score = highScore, data=Instance.uniqueName }, Instance.onlineGameID);
+                }
             }
 
             if (currentDamage > highDamage)
@@ -146,6 +149,7 @@ public class GameManager : Singleton<GameManager>
             currentScore = 0;
             currentDamage = 0;
             remainingDamageToClearLevel = 0;
+
 
             FKS.SceneUtilsVisuals.LoadScene("Title Scene");
         }

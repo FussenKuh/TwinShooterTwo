@@ -38,10 +38,11 @@ public class TitleScreen : MonoBehaviour
     {
         string bottomText = "Press <color=yellow>-space bar-</color> or <color=yellow>-a-</color> on your gamepad to join<size=80%>";
         string middleText = "";
-        string upperRightText = "Level <color=yellow>" 
-            + GameManager.Instance.highScore.ToString("D5") 
-            + "</color>\nDamage <color=yellow>"
-            + GameManager.Instance.highDamage.ToString("D5") + "</color>";
+        string upperRightText = 
+            "Name <color=yellow>" + GameManager.Instance.uniqueName +
+            "</color>\nLevel <color=yellow>"
+            + GameManager.Instance.highScore.ToString("D3")
+            + "</color>";
 
 
         StatsOverlay.Instance.UpdateBottomText(bottomText);

@@ -28,7 +28,6 @@ public class LoadingCanvas : MonoBehaviour
         while (fadeGroup.alpha > 0)
         {
             fadeGroup.alpha = fadeGroup.alpha - (Time.unscaledDeltaTime / fadeTime);
-            Debug.Log(Time.unscaledDeltaTime + " - " + fadeGroup.alpha);
             yield return new WaitForEndOfFrame();
         }
     }
