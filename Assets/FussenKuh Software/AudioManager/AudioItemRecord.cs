@@ -121,6 +121,18 @@ namespace FKS
         }
 
         /// <summary>
+        /// Adjusts the item's tempo
+        /// </summary>
+        /// <param name="argTempo">The item's new tempo (1.0f - 2.0f)</param>
+        public void AdjustAudioTempo(float argTempo)
+        {
+            if (source == null) { return; }
+
+            source.pitch = argTempo;
+            //source.outputAudioMixerGroup.audioMixer.SetFloat("Pitch", 1f / argTempo);
+        }
+
+        /// <summary>
         /// Start playback
         /// </summary>
         public void Play()

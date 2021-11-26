@@ -51,6 +51,15 @@ namespace FKS
         }
 
         /// <summary>
+        /// Adjusts the component's Tempo
+        /// </summary>
+        /// <param name="tempo">The item's new tempo (1.0f - 2.0f)</param>
+        public void AdjustAudioTempo(float tempo)
+        {
+            audioItem.AdjustAudioTempo(tempo);
+        }
+
+        /// <summary>
         /// Start playback
         /// </summary>
         /// <param name="muted">If true, the item will start playing in its muted state</param>
