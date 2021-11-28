@@ -260,7 +260,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (_player.EntityInfo.Alive)
         {
-            //Debug.Log(context);
+//            Debug.Log(context);
             moveVector = context.ReadValue<Vector2>();
 
             OnDirectionArgs args = new OnDirectionArgs();

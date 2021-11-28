@@ -51,9 +51,9 @@ public class ScoreGUI : MonoBehaviour
                 if (rank > 10) { return; } // Only show the top 10 results
                 ScoreEntry tmp = Instantiate(scoreEntryPrefab, scrollviewContents).GetComponent<ScoreEntry>();
                 tmp.Rank = rank.ToString("N0");
-                tmp.Name = score.name;
+                tmp.Name = score.data;
                 tmp.Score = score.score.ToString("N0");
-                tmp.name = "Score " + tmp.Name + " " + tmp.Score;
+                tmp.name = "Score " + score.data + " " + tmp.Score + " " + tmp.Name;
                 rank++;
             }
         }

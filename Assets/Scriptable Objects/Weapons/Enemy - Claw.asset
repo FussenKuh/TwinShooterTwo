@@ -20,7 +20,7 @@ MonoBehaviour:
   range: 0
   fireRate: 1
   damageMin: 1
-  damageMax: 4
+  damageMax: 3
   damageRadius: 0
   energyUsedPerShot: 0
   criticalChance: 8

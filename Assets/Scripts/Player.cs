@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -91,6 +92,7 @@ public class Player : MonoBehaviour, IEntity
     {
         if (atGoal && args.Phase == UnityEngine.InputSystem.InputActionPhase.Started && GameManager.Instance.DamageToClearLevel <= 0)
         {
+            FKS.AudioManager.PlayAudio("LevelComplete");
             atGoal = false;
             GameManager.Instance.LevelCompleted();
         }
@@ -137,8 +139,7 @@ public class Player : MonoBehaviour, IEntity
     {
         if (!_entityStats.Alive)
         {
-            //_entityStats.Health = 1; // TODO FOR NOW, LETS NEVER LET THE PLAYER DIE!
-            MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), "I Should Be Dead, Jim!", false);
+            //MessagePopup.Create(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y / 2, 0), "I Should Be Dead, Jim!", false);
             if (PlayerManager.Instance.Players.Where(p => p.EntityInfo.Alive).ToArray().Length == 0)
             {
                 StatsOverlay.Instance.UpdateMiddleText
@@ -147,12 +148,26 @@ public class Player : MonoBehaviour, IEntity
                     //"<color=green>g</color><color=blue>a</color><color=red>m</color><color=yellow>e</color> <color=orange>O</color><color=#7f00ff>v</color><color=#0083FF>e</color><color=#ff07ff>r</color>"
                     );
             }
+            StartCoroutine(PlayerDeathEffects());
             FKS.AudioManager.PlayAudio("Die");
         }
         else
         {
             FKS.AudioManager.PlayAudio("Hit");
         }
+    }
+
+    IEnumerator PlayerDeathEffects()
+    {
+        
+        for(int i=0; i<10; i++)
+        {
+            //Color tmpColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+            EffectsManager.Instance.EnemyDeath(transform.position, _entityStats.StartingColor);
+            EffectsManager.Instance.BulletHit(new DetectDamagingCollision.DamageInfo() { entity = _damageable, location = transform.position, normal = Vector2.zero });
+            yield return new WaitForSeconds(0.2f);
+        }
+        
     }
 
     public float _currentEnergy = 0;
@@ -237,6 +252,7 @@ public class Player : MonoBehaviour, IEntity
                 {
                     EntityInfo.Weapon = collectible.Item.Weapon;
                     MessagePopup.Create(triggeredThing.transform.position, "Picked up " + collectible.Item.Weapon.Name, false, 1f);
+                    FKS.AudioManager.PlayAudio("Pickup");
                 }
             }
         }

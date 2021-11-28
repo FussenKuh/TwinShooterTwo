@@ -51,7 +51,7 @@ public class SpawnPoint : MonoBehaviour
     {
         string n = "null";
         if (t != null) { n = t.name; }
-        Debug.Log(n + " got a detected target: " + n);
+        //Debug.Log(n + " got a detected target: " + n);
 
         if (t == null)
         {

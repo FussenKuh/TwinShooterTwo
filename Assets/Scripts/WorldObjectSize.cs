@@ -30,13 +30,19 @@ public class WorldObjectSize : MonoBehaviour
     public Vector2 Size 
     { 
         get 
-        { 
-            if (_size != _spriteRenderer.size) 
-            { 
-                Debug.LogWarning(name + " Sprite Renderer size does not match WorldObject size. Updating WorldObject size to match Sprite Renderer size.");
-                _size = _spriteRenderer.size;
-            } 
-            return _spriteRenderer.size; 
+        {
+            //if (_size != _spriteRenderer.size) 
+            //{ 
+            //    Debug.LogWarning(name + " Sprite Renderer size does not match WorldObject size. Updating WorldObject size to match Sprite Renderer size.");
+            //    _size = _spriteRenderer.size;
+            //} 
+            //return _spriteRenderer.size; 
+            if (new Vector3(_size.x, _size.y) != transform.localScale)
+            {
+                Debug.LogWarning(name + " transform.localScale does not match WorldObject size. Updating WorldObject size to match transform.localScale.");
+                _size = transform.localScale;
+            }
+            return _size;
         } 
     }
     public Vector2 ColliderSize 
@@ -51,30 +57,60 @@ public class WorldObjectSize : MonoBehaviour
     {
         _size = newDimension;
         _worldObjectID.Data.Type = newType;
-        
+
         // Ensure that the gameObject's scale didn't get accidentally altered
-        transform.localScale = Vector3.one;
+        transform.localScale = _size;
 
         // Update the visuals
-        _spriteRenderer.drawMode = SpriteDrawMode.Sliced;
-        _spriteRenderer.size = _size;
+        _spriteRenderer.drawMode = SpriteDrawMode.Simple;
+        //_spriteRenderer.size = _size;
 
         // Update the collision detection based on the type of object we are
         switch (_worldObjectID.Data.Type)
         {
             case WorldObjectData.ObjectType.FLOOR:
                 _boxCollider2D.isTrigger = true;
-                _boxCollider2D.size = _size - new Vector2(_floorColliderOffset, _floorColliderOffset);
+                //_boxCollider2D.size = _size - new Vector2(_floorColliderOffset, _floorColliderOffset);
                 break;
             case WorldObjectData.ObjectType.WALL:
                 _boxCollider2D.isTrigger = false;
-                _boxCollider2D.size = _size;
+                //_boxCollider2D.size = _size;
                 break;
             default:
                 Debug.LogWarning(name + ": We don't know how to process type (" + _worldObjectID.Data.Type + "). Treating it as a WALL");
                 break;
         }
     }
+
+
+    //public void UpdateObject(WorldObjectData.ObjectType newType, Vector2 newDimension)
+    //{
+    //    _size = newDimension;
+    //    _worldObjectID.Data.Type = newType;
+
+    //    // Ensure that the gameObject's scale didn't get accidentally altered
+    //    transform.localScale = Vector3.one;
+
+    //    // Update the visuals
+    //    _spriteRenderer.drawMode = SpriteDrawMode.Sliced;
+    //    _spriteRenderer.size = _size;
+
+    //    // Update the collision detection based on the type of object we are
+    //    switch (_worldObjectID.Data.Type)
+    //    {
+    //        case WorldObjectData.ObjectType.FLOOR:
+    //            _boxCollider2D.isTrigger = true;
+    //            _boxCollider2D.size = _size - new Vector2(_floorColliderOffset, _floorColliderOffset);
+    //            break;
+    //        case WorldObjectData.ObjectType.WALL:
+    //            _boxCollider2D.isTrigger = false;
+    //            _boxCollider2D.size = _size;
+    //            break;
+    //        default:
+    //            Debug.LogWarning(name + ": We don't know how to process type (" + _worldObjectID.Data.Type + "). Treating it as a WALL");
+    //            break;
+    //    }
+    //}
 
     #region Collision/Trigger Region
     //private void OnCollisionEnter2D(Collision2D collision)

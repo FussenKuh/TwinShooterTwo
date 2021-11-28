@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
+    public string guid;
     public string uniqueName;
     public int onlineGameID = 1000;
 
@@ -29,9 +30,30 @@ public class GameManager : Singleton<GameManager>
     [SerializeField]
     CameraSystem cameraSystem;
 
+    void LoadPlayerInfo()
+    {
+        guid = PlayerPrefs.GetString("GUID", System.Guid.NewGuid().ToString());
+        guid = guid.Replace("-", "");
+        uniqueName = PlayerPrefs.GetString("UniqueName", UniqueNameGenerator.GenerateString(4));
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        highDamage = PlayerPrefs.GetInt("HighDamage", 0);
+    }
+
+    void SavePlayerInfo()
+    {
+        PlayerPrefs.SetString("GUID", guid);
+        PlayerPrefs.SetString("UniqueName", uniqueName);
+        PlayerPrefs.SetInt("HighScore", highScore);
+        PlayerPrefs.SetInt("HighDamage", highDamage);
+
+    }
+
     public void Initialize()
     {
-        uniqueName = UniqueNameGenerator.GenerateString(4);
+        LoadPlayerInfo();
+        SavePlayerInfo();
+
+        //uniqueName = UniqueNameGenerator.GenerateString(4);
 
         cameraSystem = GameObject.Find("Main Camera System").GetComponent<CameraSystem>();
         PlayerManager.Instance.Initialize();
@@ -137,7 +159,7 @@ public class GameManager : Singleton<GameManager>
                 FKS.OnlineScoreBoard _onlineScoreBoard = GameObject.FindObjectOfType<FKS.OnlineScoreBoard>();
                 if (_onlineScoreBoard != null)
                 {
-                    _onlineScoreBoard.PostScore(new FKS.Score() { name = Instance.uniqueName, score = highScore, data=Instance.uniqueName }, Instance.onlineGameID);
+                    _onlineScoreBoard.PostScore(new FKS.Score() { name = Instance.guid, score = highScore, data=Instance.uniqueName }, Instance.onlineGameID);
                 }
             }
 
@@ -150,7 +172,7 @@ public class GameManager : Singleton<GameManager>
             currentDamage = 0;
             remainingDamageToClearLevel = 0;
 
-
+            SavePlayerInfo();
             FKS.SceneUtilsVisuals.LoadScene("Title Scene");
         }
     }
@@ -185,5 +207,15 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    private void OnApplicationPause(bool pause)
+    {
+        Debug.Log("Applicaiton Paused");
+        FKS.AudioManager.PauseAllMusic();
+    }
 
+    private void OnApplicationFocus(bool focus)
+    {
+        Debug.Log("Application Resumed");
+        FKS.AudioManager.UnpauseAllMusic();
+    }
 }

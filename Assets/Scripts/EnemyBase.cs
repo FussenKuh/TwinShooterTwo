@@ -168,14 +168,14 @@ public class EnemyBase : MonoBehaviour, IEntity
     {
         if (colliding && attacking == null && contactInfo.entity.CanItHurtMe(EntityInfo.Weapon.Type))
         {
-            Debug.LogFormat("{0} is attacking {1}", name, contactInfo.entity.name);
+            //Debug.LogFormat("{0} is attacking {1}", name, contactInfo.entity.name);
             attacking = StartCoroutine(Attack(contactInfo));
         }
         else
         {
             if (attacking != null)
             {
-                Debug.LogFormat("{0} is stopping the attack on {1}", name, contactInfo.entity.name);
+                //Debug.LogFormat("{0} is stopping the attack on {1}", name, contactInfo.entity.name);
                 StopCoroutine(attacking);
                 attacking = null;
             }

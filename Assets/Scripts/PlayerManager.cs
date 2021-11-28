@@ -104,8 +104,9 @@ public class PlayerManager : Singleton<PlayerManager>
         cameraSystem.AddFollowTarget(players[players.Count - 1].transform);
 
 
+        FKS.AudioManager.PlayAudio("PlayerSpawn");
 
-        StartCoroutine(DelayWelcome(pos, "Welcome " + playerInput.name, false, 0f));
+        //StartCoroutine(DelayWelcome(pos, "Welcome " + playerInput.name, false, 0f));
 
         if (players.Count >= maxPlayers)
         {

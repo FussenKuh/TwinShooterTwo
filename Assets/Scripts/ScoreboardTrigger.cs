@@ -65,6 +65,8 @@ public class ScoreboardTrigger : MonoBehaviour
     {
         _onlineGameID = GameManager.Instance.onlineGameID;
         _scoreboard.RetrieveScores(_onlineGameID);
+
+        _canvasGroup.GetComponent<Canvas>().worldCamera = Camera.main;
     }
 
     // Update is called once per frame

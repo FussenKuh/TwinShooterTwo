@@ -25,7 +25,7 @@ public class WorldObjectDamage : MonoBehaviour
 
     void OnHit(WeaponData weaponData)
     {
-        Debug.Log(name + " was hit");
+        //Debug.Log(name + " was hit");
     }
 
     // Start is called before the first frame update

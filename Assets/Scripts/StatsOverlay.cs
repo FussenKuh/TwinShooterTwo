@@ -10,6 +10,8 @@ public class StatsOverlay : MonoBehaviour
     public TextMeshProUGUI middleText;
     public TextMeshProUGUI bottomText;
 
+    public TextMeshProUGUI bylineText;
+
     static public StatsOverlay Instance;
 
 
@@ -36,6 +38,11 @@ public class StatsOverlay : MonoBehaviour
     public void UpdateBottomText(string text)
     {
         UpdateText(text, bottomText);
+    }
+
+    public void UpdateByLineText(string text)
+    {
+        UpdateText(text, bylineText);
     }
 
     private void Awake()

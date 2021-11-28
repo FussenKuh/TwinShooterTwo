@@ -36,6 +36,7 @@ public class TitleScreen : MonoBehaviour
 
     void UpdateStatsOverlay()
     {
+        string byLineText = "GitHub GameOff 2021 - Chris Kraszewski v" + Application.version;
         string bottomText = "Press <color=yellow>-space bar-</color> or <color=yellow>-a-</color> on your gamepad to join<size=80%>";
         string middleText = "";
         string upperRightText = 
@@ -48,5 +49,6 @@ public class TitleScreen : MonoBehaviour
         StatsOverlay.Instance.UpdateBottomText(bottomText);
         StatsOverlay.Instance.UpdateMiddleText(middleText);
         StatsOverlay.Instance.UpdateUpperRightText(upperRightText);
+        StatsOverlay.Instance.UpdateByLineText(byLineText);
     }
 }
