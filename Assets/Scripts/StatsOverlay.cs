@@ -10,6 +10,8 @@ public class StatsOverlay : MonoBehaviour
     public TextMeshProUGUI middleText;
     public TextMeshProUGUI bottomText;
 
+    public TextMeshProUGUI bylineText;
+
     static public StatsOverlay Instance;
 
 
@@ -38,6 +40,11 @@ public class StatsOverlay : MonoBehaviour
         UpdateText(text, bottomText);
     }
 
+    public void UpdateByLineText(string text)
+    {
+        UpdateText(text, bylineText);
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -53,12 +60,15 @@ public class StatsOverlay : MonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
-        upperRightText = transform.Find("Text - Upper Right").GetComponent<TextMeshProUGUI>();
-        upperLeftText = transform.Find("Text - Upper Left").GetComponent<TextMeshProUGUI>();
-        middleText = transform.Find("Text - Middle").GetComponent<TextMeshProUGUI>();
-        bottomText = transform.Find("Text - Bottom").GetComponent<TextMeshProUGUI>();
+        Canvas c = GetComponent<Canvas>();
+        c.worldCamera = Camera.main;
 
-        DontDestroyOnLoad(gameObject);
+        //upperRightText = transform.Find("Text - Upper Right").GetComponent<TextMeshProUGUI>();
+        //upperLeftText = transform.Find("Text - Upper Left").GetComponent<TextMeshProUGUI>();
+        //middleText = transform.Find("Text - Middle").GetComponent<TextMeshProUGUI>();
+        //bottomText = transform.Find("Text - Bottom").GetComponent<TextMeshProUGUI>();
+
+        //DontDestroyOnLoad(gameObject);
     }
 
 }

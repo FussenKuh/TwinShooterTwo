@@ -244,6 +244,18 @@ namespace FKS
             return mySelf._AdjustAudio(itemID, volume, mySelf.musicPool);
         }
         /// <summary>
+        /// Adjust a value associated with the music item associated with the passed in ID
+        /// </summary>
+        /// <param name="itemID">The ID of the music item to adjust</param>
+        /// <param name="tempo">The new desired tempo (1.0f - 2.0f)</param>
+        /// <returns>False if the itemID does not exist, otherwise, True</returns>
+        static public bool AdjustMusicTempo(int itemID, float tempo)
+        {
+            if (mySelf == null) { return false; }
+            return mySelf._AdjustAudioTempo(itemID, tempo, mySelf.musicPool);
+        }
+
+        /// <summary>
         /// Mute the music item associated with the passed in ID
         /// </summary>
         /// <param name="itemID">The ID of the music item to mute</param>
@@ -741,6 +753,29 @@ namespace FKS
             if (item != null)
             {
                 item.AdjustAudio(volume);
+                retVal = true;
+            }
+
+            return retVal;
+        }
+        /// <summary>
+        /// Adjust a value associated with the audio item associated with the passed in ID
+        /// </summary>
+        /// <param name="itemID">The ID of the audio item to adjust</param>
+        /// <param name="tempo">The new desired tempo (1.0f - 2.0f)</param>
+        /// <param name="audioPool">The pool of AudioItemComponents to search through</param>
+        /// <returns>False if the itemID does not exist, otherwise, True</returns>
+        bool _AdjustAudioTempo(int itemID, float tempo, List<AudioItemComponent> audioPool)
+        {
+            if (mySelf == null) { return false; }
+
+            bool retVal = false;
+
+            var item = mySelf.RetrievePlayingItem(audioPool, itemID);
+
+            if (item != null)
+            {
+                item.AdjustAudioTempo(tempo);
                 retVal = true;
             }
 

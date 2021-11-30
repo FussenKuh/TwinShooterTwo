@@ -60,22 +60,28 @@ public class PlayerManager : Singleton<PlayerManager>
         if (playerInput.currentControlScheme == "Keyboard&Mouse")
         {
             string middleText =
-                "<size=70%>\n\n\n\n\n\n\n\n\n\n" +
                 "<color=yellow> Keyboard Controls </color>\n" +
-                "<color=green>Move & Look</color> - WSAD or Arrow Keys & Mouse\n" +
-                "<color=green>Shoot</color> - Left mouse button\n" +
-                "<color=green>Use</color> - Space</size>";
+                "WSAD or Arrow Keys & Mouse <color=green>Move & Look</color>\n" +
+                "Left mouse button <color=green>Shoot</color>\n" +
+                "Space <color=green>Use</color>";
+            //"<color=yellow> Keyboard Controls </color>\n" +
+            //"<color=green>Move & Look</color> - WSAD or Arrow Keys & Mouse\n" +
+            //"<color=green>Shoot</color> - Left mouse button\n" +
+            //"<color=green>Use</color> - Space";
 
             StatsOverlay.Instance.UpdateMiddleText(middleText);
         }
         else
         {
             string middleText =
-                "<size=70%>\n\n\n\n\n\n\n\n\n\n" +
                 "<color=yellow>Gamepad Controls </color>\n" +
-                "<color=green>Move & Look</color> - Left and right sticks\n" +
-                "<color=green>Shoot</color> - Right trigger\n" +
-                "<color=green>Use</color> - A</size>";
+                "Left and right sticks <color=green>Move & Look</color>\n" +
+                "Right trigger <color=green>Shoot</color>\n" +
+                "A <color=green>Use</color>";
+                //"<color=yellow>Gamepad Controls </color>\n" +
+                //"<color=green>Move & Look</color> - Left and right sticks\n" +
+                //"<color=green>Shoot</color> - Right trigger\n" +
+                //"<color=green>Use</color> - A";
 
             StatsOverlay.Instance.UpdateMiddleText(middleText);
         }
@@ -98,8 +104,9 @@ public class PlayerManager : Singleton<PlayerManager>
         cameraSystem.AddFollowTarget(players[players.Count - 1].transform);
 
 
+        FKS.AudioManager.PlayAudio("PlayerSpawn");
 
-        StartCoroutine(DelayWelcome(pos, "Welcome " + playerInput.name, false, 0f));
+        //StartCoroutine(DelayWelcome(pos, "Welcome " + playerInput.name, false, 0f));
 
         if (players.Count >= maxPlayers)
         {
@@ -117,6 +124,14 @@ public class PlayerManager : Singleton<PlayerManager>
         if (players.Count < maxPlayers)
         {
             pim.EnableJoining();
+        }
+    }
+
+    public void ResetPlayers()
+    {
+        foreach (var p in players)
+        {
+            p.ResetPlayer();
         }
     }
 

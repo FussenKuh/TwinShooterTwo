@@ -131,9 +131,13 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
 
-    void UpdateBulletCount(int additionalBullets)
+    void UpdateBulletCount(float additionalBullets)
     {
-        currentNumberOfBullets += additionalBullets;
+        _player.EntityInfo.Energy += additionalBullets;
+
+        _player.EntityInfo.Energy = Mathf.Max(_player.EntityInfo.Energy, 0);
+        _player.EntityInfo.Energy = Mathf.Min(_player.EntityInfo.Energy, _player.EntityInfo.StartingEnergy);
+        _player.UpdateEnergyBar();
     }
 
     // Update is called once per frame
@@ -141,7 +145,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         _elapsedTime += Time.deltaTime;
 
-        if (_player.PlayerStats.Alive)
+        if (_player.EntityInfo.Alive)
         {
 
             if (firing)
@@ -149,14 +153,15 @@ public class PlayerInputHandler : MonoBehaviour
                 triggerDown += Time.deltaTime;
                 triggerDown = Mathf.Min(5, triggerDown);
 
-                if (_elapsedTime > _player.currentWeapon.FireRate && currentNumberOfBullets > 0)
+                if (_elapsedTime > _player.EntityInfo.Weapon.FireRate && (_player.EntityInfo.Energy >= _player.EntityInfo.Weapon.EnergyUsedPerShot))
                 {
-                    //TODO How does the player get bullets back? UpdateBulletCount(-1);
+                    //TODO How does the player get bullets back? 
+                    UpdateBulletCount(-_player.EntityInfo.Weapon.EnergyUsedPerShot);
                     _elapsedTime = 0f;
                     //                GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_bulletPrefab, _bulletSpawnLocation.position, _turret.right, _speed, _angleVariation, 0);
-                    GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_player.currentWeapon.ProjectilePrefab, _bulletSpawnLocation.position, _turret.right, _player.currentWeapon.Speed, _player.currentWeapon.Spread, 0);
+                    GameObject tmpBullet = FKS.ProjectileUtils2D.SpawnProjectile(_player.EntityInfo.Weapon.ProjectilePrefab, _bulletSpawnLocation.position, _turret.right, _player.EntityInfo.Weapon.Speed, _player.EntityInfo.Weapon.Spread, 0);
                     Bullet b = tmpBullet.GetComponent<Bullet>();
-                    b.Weapon = _player.currentWeapon;
+                    b.Weapon = _player.EntityInfo.Weapon;
                     b.BulletTint = sr.color;
 
                     try
@@ -176,10 +181,13 @@ public class PlayerInputHandler : MonoBehaviour
 
                     impulseSource.GenerateImpulse(_turret.right * impulseMult);
 
+                    FKS.AudioManager.PlayAudio("Shot");
+
                 }
             }
             else
             {
+                _player.UpdateEnergy();
                 triggerDown -= (Time.deltaTime * 2f);
                 triggerDown = Mathf.Max(0, triggerDown);
             }
@@ -250,9 +258,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (_player.PlayerStats.Alive)
+        if (_player.EntityInfo.Alive)
         {
-            //Debug.Log(context);
+//            Debug.Log(context);
             moveVector = context.ReadValue<Vector2>();
 
             OnDirectionArgs args = new OnDirectionArgs();
@@ -264,7 +272,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnLook(InputAction.CallbackContext context)
     {
-        if (_player.PlayerStats.Alive)
+        if (_player.EntityInfo.Alive)
         {
             //Debug.Log(context);
             lookVector = context.ReadValue<Vector2>();
@@ -285,7 +293,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnFire(InputAction.CallbackContext context)
     {
-        if (_player.PlayerStats.Alive)
+        if (_player.EntityInfo.Alive)
         {
             if (context.started)
             {
