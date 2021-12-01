@@ -36,14 +36,15 @@ public class TitleScreen : MonoBehaviour
 
     void UpdateStatsOverlay()
     {
+        int level = Mathf.Max(0, (GameManager.Instance.highScore - 1));
         string byLineText = "GitHub GameOff 2021 - Chris Kraszewski v" + Application.version;
         string bottomText = "Press <color=yellow>-space bar-</color> or <color=yellow>-a-</color> on your gamepad to join<size=80%>";
         string middleText = "";
         string upperRightText = 
             "Name <color=yellow>" + GameManager.Instance.uniqueName +
             "</color>\nLevel <color=yellow>"
-            + GameManager.Instance.highScore.ToString("D3")
-            + "</color>";
+            + level.ToString("D3")
+            + "</color>\n<size=45%>highest level cleared</size>";
 
 
         StatsOverlay.Instance.UpdateBottomText(bottomText);

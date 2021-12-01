@@ -66,7 +66,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Online Leaderboard
+  m_text: 'Online Leaderboard
+
+    <size=45%>Based on highest level cleared in the
+    shortest time</size>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5381753c884415b4f9c4b8bf20fbaf90, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 8c11fda479366494f8014b242e2ac87d, type: 2}
@@ -93,8 +96,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70
-  m_fontSizeBase: 70
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1114,6 +1117,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2966668689316196605, guid: a5e1b74bae02d3548ac98b0fb38ecc36, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4203873404250563176, guid: a5e1b74bae02d3548ac98b0fb38ecc36, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4203873404250563176, guid: a5e1b74bae02d3548ac98b0fb38ecc36, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4203873404250563176, guid: a5e1b74bae02d3548ac98b0fb38ecc36, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4203873404250563176, guid: a5e1b74bae02d3548ac98b0fb38ecc36, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6667623044111392338, guid: a5e1b74bae02d3548ac98b0fb38ecc36, type: 3}

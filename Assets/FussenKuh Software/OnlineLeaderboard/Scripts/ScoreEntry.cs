@@ -11,6 +11,8 @@ public class ScoreEntry : MonoBehaviour
     TextMeshProUGUI nameField;
     [SerializeField]
     TextMeshProUGUI scoreField;
+    [SerializeField]
+    TextMeshProUGUI elapsedTimeField;
 
     private void Awake()
     {
@@ -29,6 +31,12 @@ public class ScoreEntry : MonoBehaviour
         {
             Debug.LogError("ScoreEntry.cs - scoreField not set");
             scoreField = null;
+        }
+
+        if (elapsedTimeField == null)
+        {
+            Debug.LogError("ScoreEntry.cs - elapsedTimeField not set");
+            elapsedTimeField = null;
         }
 
     }
@@ -65,6 +73,18 @@ public class ScoreEntry : MonoBehaviour
         set
         {
             scoreField.SetText(value);
+        }
+    }
+
+    public string ElapsedTime
+    {
+        get
+        {
+            return elapsedTimeField.text;
+        }
+        set
+        {
+            elapsedTimeField.SetText(value);
         }
     }
 

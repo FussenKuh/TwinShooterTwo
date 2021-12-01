@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using FKS;
+using System.Linq;
 
 public class ScoreGUI : MonoBehaviour
 {
@@ -31,6 +32,35 @@ public class ScoreGUI : MonoBehaviour
 
     public void RefreshScores(List<Score> scores)
     {
+
+        scores.Sort(delegate (Score x, Score y)
+        {
+            GameManager.OnlineScoreData xData = JsonUtility.FromJson<GameManager.OnlineScoreData>(x.data);
+            GameManager.OnlineScoreData yData = JsonUtility.FromJson<GameManager.OnlineScoreData>(y.data);
+
+            if (x.score > y.score)
+            {
+                return -1;
+            }
+            else if (x.score == y.score)
+            {
+                if (xData.elapsedTime <= yData.elapsedTime)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
+
+            }
+            else
+            {
+                return 1;
+            }
+
+        });
+
         // Delete all of the items currently in the UI
         for (int i=0; i< scrollviewContents.childCount; i++)
         {
@@ -43,19 +73,41 @@ public class ScoreGUI : MonoBehaviour
             infoEntry.Rank = "Rank";
             infoEntry.Name = "Name";
             infoEntry.Score = "Level";
+            infoEntry.ElapsedTime = "Time";
             infoEntry.name = "Score " + infoEntry.Name + " " + infoEntry.Score;
+
+            List<ScoreEntry> scoreEntries = new List<ScoreEntry>();
+
+            // This shows calling the Sort(Comparison(T) overload using
+            // an anonymous method for the Comparison delegate.
+            // This method treats null as the lesser of two values.
+            //parts.Sort(delegate (Part x, Part y)
+            //{
+            //    if (x.PartName == null && y.PartName == null) return 0;
+            //    else if (x.PartName == null) return -1;
+            //    else if (y.PartName == null) return 1;
+            //    else return x.PartName.CompareTo(y.PartName);
+            //});
+
 
             int rank = 1;
             foreach (Score score in scores)
             {
                 if (rank > 10) { return; } // Only show the top 10 results
+
+                GameManager.OnlineScoreData osd = JsonUtility.FromJson<GameManager.OnlineScoreData>(score.data);
+
                 ScoreEntry tmp = Instantiate(scoreEntryPrefab, scrollviewContents).GetComponent<ScoreEntry>();
                 tmp.Rank = rank.ToString("N0");
-                tmp.Name = score.data;
-                tmp.Score = score.score.ToString("N0");
-                tmp.name = "Score " + score.data + " " + tmp.Score + " " + tmp.Name;
+                tmp.Name = osd.name;
+                tmp.Score = (score.score - 1).ToString("N0");
+                tmp.ElapsedTime = osd.elapsedTime.ToString("N2");
+                tmp.name = "Score " + osd.name + " " + tmp.Score + " " + tmp.Name;
                 rank++;
             }
+
+
+
         }
         else
         {

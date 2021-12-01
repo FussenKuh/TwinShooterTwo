@@ -99,20 +99,29 @@ public class GameManager : Singleton<GameManager>
 
     public void LevelCompleted()
     {
+        timerStarted = false;
+
         currentScore++;
         LoadLevel();
     }
 
 
+    float totalElapsedTime = 0;
+    float levelElapsedTime = 0;
+    bool timerStarted = false;
+
     public void LevelLoaded(WorldSpawner level)
     {
+        triggeredGameOver = false;
+        if (currentScore == 1)
+        {
+            totalElapsedTime = 0;
+        }
+        totalElapsedTime += levelElapsedTime;
+        levelElapsedTime = 0;
+        timerStarted = true;
 
-        string upperLeftText = "Level <color=yellow>"
-            + Instance.currentScore.ToString()
-            + "</color>\nDamage <color=yellow>"
-            + Instance.DamageToClearLevel.ToString() + "</color>";
-
-        StatsOverlay.Instance.UpdateUpperLeftText(upperLeftText);
+        UpdateRealtimeLevelStats();
         StatsOverlay.Instance.UpdateMiddleText("");
 
         Instance.AddToTotalDamage(0);
@@ -120,6 +129,19 @@ public class GameManager : Singleton<GameManager>
         CurrentLevel = level;
         PlayerManager.Instance.ResetPlayers();
         PlayerManager.Instance.RelocatePlayers(CurrentLevel.StartPoint.transform);
+    }
+
+    private static void UpdateRealtimeLevelStats()
+    {
+        string upperLeftText = "Level <color=yellow>"
+            + Instance.currentScore.ToString() + "</color>\n"
+            + "Time <color=yellow>"
+            + (Instance.totalElapsedTime + Instance.levelElapsedTime).ToString("N2") + "</color>\n"
+            + "Damage <color=yellow>"
+            + Instance.DamageToClearLevel.ToString() + "</color>";
+
+
+        StatsOverlay.Instance.UpdateUpperLeftText(upperLeftText);
     }
 
     public void LoadLevel()
@@ -147,19 +169,32 @@ public class GameManager : Singleton<GameManager>
         FKS.SceneUtilsVisuals.LoadScene("Level Scene");
     }
 
+    [System.Serializable]
+    public struct OnlineScoreData
+    {
+        public string name;
+        public float elapsedTime;
+    }
+
+    bool triggeredGameOver = false;
+
     public void GameOver()
     {
-        if (PlayerManager.Instance.Players.Where(p => p.EntityInfo.Alive).ToArray().Length == 0)
+        if (PlayerManager.Instance.Players.Where(p => p.EntityInfo.Alive).ToArray().Length == 0 && !triggeredGameOver)
         {
+            triggeredGameOver = true;
             ChangeMusicTempo(1f);
 
-            if (currentScore > highScore)
+            //UpdateOnlineScoreboard();
+
+            if (currentScore >= highScore)
             {
                 highScore = currentScore;
-                FKS.OnlineScoreBoard _onlineScoreBoard = GameObject.FindObjectOfType<FKS.OnlineScoreBoard>();
-                if (_onlineScoreBoard != null)
+
+                if (highScore > 1)
                 {
-                    _onlineScoreBoard.PostScore(new FKS.Score() { name = Instance.guid, score = highScore, data=Instance.uniqueName }, Instance.onlineGameID);
+                    // This implies that the player has at least beaten the first level. So, update the online leaderboard
+                    UpdateOnlineScoreboard();
                 }
             }
 
@@ -177,6 +212,18 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    private void UpdateOnlineScoreboard()
+    {
+        OnlineScoreData osd = new OnlineScoreData() { name = Instance.uniqueName, elapsedTime = totalElapsedTime };
+        string dataString = JsonUtility.ToJson(osd);
+        Debug.Log(dataString);
+
+        FKS.OnlineScoreBoard _onlineScoreBoard = GameObject.FindObjectOfType<FKS.OnlineScoreBoard>();
+        if (_onlineScoreBoard != null)
+        {
+            _onlineScoreBoard.PostScore(new FKS.Score() { name = Instance.guid, score = highScore, data = dataString }, Instance.onlineGameID);
+        }
+    }
 
     public void AddToTotalDamage(int dmg)
     {
@@ -204,6 +251,16 @@ public class GameManager : Singleton<GameManager>
                 _previousTempo = _musicTempo;
                 ChangeMusicTempo(_musicTempo);
             }
+        }
+
+        if (timerStarted)
+        {
+            levelElapsedTime += Time.deltaTime;
+            if (PlayerManager.Instance.Players.Where(p => p.EntityInfo.Alive).ToArray().Length == 0)
+            {
+                timerStarted = false;
+            }
+            UpdateRealtimeLevelStats();
         }
     }
 
